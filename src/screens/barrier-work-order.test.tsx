@@ -24,7 +24,7 @@ test('records designated reviewer provenance, hazard control and an immutable va
   expect(screen.getByText(/reviewed the screening evidence/i)).toBeInTheDocument()
 })
 
-test('explains priority inputs and requires an override reason', async () => {
+test('uses a selected priority override band and persists its rationale', async () => {
   const user = userEvent.setup()
   render(<BarrierHarness />)
   await user.click(screen.getByRole('button', { name: /prioritise before validation/i }))
@@ -32,9 +32,14 @@ test('explains priority inputs and requires an override reason', async () => {
   await user.click(screen.getByRole('button', { name: /validate screening/i }))
   expect(screen.getByText(/severity.*essential service.*alternative route.*affected journey.*urgency/i)).toBeInTheDocument()
   await user.click(screen.getByLabelText(/override calculated priority/i))
+  await user.selectOptions(screen.getByLabelText(/override band/i), 'moderate')
   await user.clear(screen.getByLabelText(/override reason/i))
   await user.click(screen.getByRole('button', { name: /^prioritise barrier$/i }))
   expect(screen.getByRole('alert')).toHaveTextContent(/reason is required/i)
+  await user.type(screen.getByLabelText(/override reason/i), 'Temporary control reduces immediate exposure')
+  await user.click(screen.getByRole('button', { name: /^prioritise barrier$/i }))
+  expect(screen.getByText(/overridden from critical to moderate/i)).toBeInTheDocument()
+  expect(screen.getByText(/temporary control reduces immediate exposure/i)).toBeInTheDocument()
 })
 
 function WorkOrderHarness() {
@@ -44,15 +49,30 @@ function WorkOrderHarness() {
   return <WorkOrderScreen state={state} dispatch={dispatch} barrierId={fixtureIds.primaryBarrier} />
 }
 
-test('validates assignment and moves repair evidence only to awaiting verification', async () => {
+test('validates every assignment field, focuses errors and preserves entered work order values', async () => {
   const user = userEvent.setup()
   render(<WorkOrderHarness />)
   await user.clear(screen.getByLabelText(/owner role/i))
+  await user.clear(screen.getByLabelText(/repair remedy/i))
+  await user.clear(screen.getByLabelText(/cost band/i))
+  await user.clear(screen.getByLabelText(/due date/i))
   await user.click(screen.getByRole('button', { name: /create work order/i }))
-  expect(screen.getByRole('alert')).toHaveTextContent(/owner role is required/i)
-  await user.type(screen.getByLabelText(/owner role/i), 'Campus facilities officer')
+  const summary = screen.getByRole('alert')
+  expect(summary).toHaveFocus()
+  expect(summary).toHaveTextContent(/owner role is required/i)
+  expect(summary).toHaveTextContent(/remedy is required/i)
+  expect(summary).toHaveTextContent(/cost band is required/i)
+  expect(summary).toHaveTextContent(/due date is required/i)
+  await user.type(screen.getByLabelText(/owner role/i), 'Civil works coordinator')
+  await user.type(screen.getByLabelText(/repair remedy/i), 'Clear the landing and renew the tactile edge.')
+  await user.type(screen.getByLabelText(/cost band/i), '₹25,000–₹50,000')
+  await user.type(screen.getByLabelText(/due date/i), '2026-08-28')
   await user.click(screen.getByRole('button', { name: /create work order/i }))
   expect(screen.getByRole('heading', { name: /assigned work/i })).toBeInTheDocument()
+  expect(screen.getByText(/civil works coordinator/i)).toBeInTheDocument()
+  expect(screen.getByText(/clear the landing and renew the tactile edge/i)).toBeInTheDocument()
+  expect(screen.getByText(/₹25,000–₹50,000/i)).toBeInTheDocument()
+  expect(screen.getByText(/28 august 2026/i)).toBeInTheDocument()
   expect(screen.getByText(/before repair/i)).toBeInTheDocument()
   expect(screen.getByText(/after repair/i)).toBeInTheDocument()
   await user.click(screen.getByRole('button', { name: /submit repair evidence/i }))
