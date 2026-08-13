@@ -12,15 +12,34 @@ describe('createDemoFixture', () => {
     expect(first.journeys).not.toBe(second.journeys)
     expect(first.journeys[0]).not.toBe(second.journeys[0])
     expect(first.barriers).not.toBe(second.barriers)
-    expect(first.barriers[0].evidence).not.toBe(second.barriers[0].evidence)
+    expect(first.workOrders).not.toBe(second.workOrders)
+    expect(first.verifications).not.toBe(second.verifications)
+    expect(first.activity).not.toBe(second.activity)
+    first.barriers.forEach((barrier, barrierIndex) => {
+      expect(barrier).not.toBe(second.barriers[barrierIndex])
+      expect(barrier.evidence).not.toBe(second.barriers[barrierIndex].evidence)
+      barrier.evidence.forEach((item, evidenceIndex) => {
+        expect(item).not.toBe(second.barriers[barrierIndex].evidence[evidenceIndex])
+      })
+    })
 
     first.campus.name = 'Changed campus'
     first.journeys[0].checkpoints.push('Changed checkpoint')
-    first.barriers[0].evidence[0].altText = 'Changed evidence'
+    first.barriers.forEach((barrier) => {
+      barrier.title = 'Changed barrier'
+      barrier.evidence[0].altText = 'Changed evidence'
+    })
+    first.workOrders.length = 1
+    first.verifications.length = 1
+    first.activity.length = 1
 
     expect(second.campus.name).toBe('Saraswati Government College (fictional)')
     expect(second.journeys[0].checkpoints).not.toContain('Changed checkpoint')
-    expect(second.barriers[0].evidence[0].altText).not.toBe('Changed evidence')
+    expect(second.barriers.every(({ title }) => title !== 'Changed barrier')).toBe(true)
+    expect(second.barriers.flatMap(({ evidence }) => evidence).every(({ altText }) => altText !== 'Changed evidence')).toBe(true)
+    expect(second.workOrders).toHaveLength(0)
+    expect(second.verifications).toHaveLength(0)
+    expect(second.activity).toHaveLength(0)
   })
 
   it('contains the primary gate-to-admissions story and two backlog findings', () => {
@@ -62,8 +81,10 @@ describe('createDemoFixture', () => {
   it('labels every record as illustrative demo data', () => {
     const state = createDemoFixture()
     const records = [state.campus, ...state.journeys, ...state.barriers]
+    const evidence = state.barriers.flatMap((barrier) => barrier.evidence)
 
     expect(records.every(({ dataLabel }) => dataLabel === 'Illustrative demo data')).toBe(true)
+    expect(evidence.every(({ dataLabel }) => dataLabel === 'Illustrative demo data')).toBe(true)
   })
 
   it('gives every evidence item decision-relevant alt text', () => {
