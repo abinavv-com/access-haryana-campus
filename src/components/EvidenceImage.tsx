@@ -1,0 +1,2 @@
+import { useState } from 'react';import type { EvidenceItem } from '../domain/types'
+export function EvidenceImage({evidence}:{evidence:EvidenceItem}){const[failed,setFailed]=useState(false);return <figure className="evidence-card">{failed?<div role="img" aria-label={evidence.altText}>Illustrative evidence unavailable</div>:<img src={evidence.path} alt={evidence.altText} onError={()=>setFailed(true)}/>}<figcaption><strong>Illustrative demo evidence</strong><span>{evidence.altText}</span></figcaption></figure>}

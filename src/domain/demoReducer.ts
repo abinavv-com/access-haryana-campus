@@ -5,6 +5,7 @@ import type { DemoState } from './types'
 
 export type DemoAction =
   | { type: 'APPLY_TRANSITION'; command: TransitionCommand }
+  | { type: 'SUBMIT_AUDIT'; barrier: DemoState['barriers'][number]; event: DemoState['activity'][number] }
   | { type: 'RESET_DEMO' }
 
 function verificationInput(state: DemoState, command: TransitionCommand): {
@@ -38,6 +39,10 @@ function verificationInput(state: DemoState, command: TransitionCommand): {
 
 export function demoReducer(state: DemoState, action: DemoAction): DemoState {
   if (action.type === 'RESET_DEMO') return createDemoFixture()
+  if (action.type === 'SUBMIT_AUDIT') {
+    if (state.barriers.some(item => item.id === action.barrier.id) || action.barrier.status !== 'observed' || action.barrier.evidence.length === 0) return state
+    return { ...state, barriers: [...state.barriers, structuredClone(action.barrier)], activity: [...state.activity, structuredClone(action.event)] }
+  }
 
   const verification = verificationInput(state, action.command)
   if (['accept', 'reject', 'request_inspection'].includes(action.command.type)) {

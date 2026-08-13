@@ -1,1 +1,6 @@
-export function RouteContent(){return <section className="route-placeholder" aria-labelledby="page-title"><p className="eyebrow">Command centre</p><h1 id="page-title">Main gate → Admissions</h1><p>Follow one fictional screening finding from observation through independent user verification.</p><a className="button-primary" href="/audit">Continue guided audit</a></section>}
+import type { Dispatch } from 'react'
+import type { DemoAction } from '../domain/demoReducer'
+import type { DemoState } from '../domain/types'
+import { AuditScreen } from '../screens/AuditScreen'
+import { OverviewScreen } from '../screens/OverviewScreen'
+export function RouteContent({state,dispatch}:{state:DemoState;dispatch:Dispatch<DemoAction>}){const path=window.location.pathname;const navigate=(next:string)=>{window.history.pushState({},'',next);window.dispatchEvent(new PopStateEvent('popstate'))};return path==='/audit'?<AuditScreen state={state} dispatch={dispatch} navigate={navigate}/>:<OverviewScreen state={state} onStartAudit={()=>navigate('/audit')}/>}
