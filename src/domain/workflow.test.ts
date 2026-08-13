@@ -27,9 +27,9 @@ const commands: Record<string, TransitionCommand> = {
   prioritise: { ...base, type: 'prioritise', actorPerspective: 'facilities', reason: 'Essential journey and no safe alternative.' },
   assign: { ...base, type: 'assign', actorPerspective: 'facilities', workOrder, reason: 'Repair assigned.' },
   submit: { ...base, type: 'submit_evidence', actorPerspective: 'facilities', workOrderId: 'wo-1', evidence: [before], reason: 'Repair evidence submitted.' },
-  accept: { ...base, type: 'accept', actorPerspective: 'verifier', verificationId: 'verify-1', testerRole: 'student-verifier', repairOwnerRole: 'facilities-officer', consented: true, definedTestConditions: 'Main gate to admissions, dry daylight conditions.', reason: 'Journey completed under defined conditions.' },
-  reject: { ...base, type: 'reject', actorPerspective: 'verifier', verificationId: 'verify-1', testerRole: 'student-verifier', repairOwnerRole: 'facilities-officer', consented: true, definedTestConditions: 'Main gate to admissions, dry daylight conditions.', reason: 'Landing remains obstructed.' },
-  inspect: { ...base, type: 'request_inspection', actorPerspective: 'verifier', verificationId: 'verify-1', testerRole: 'student-verifier', repairOwnerRole: 'facilities-officer', consented: true, definedTestConditions: 'Gradient requires professional assessment.', reason: 'Bounded retest cannot responsibly determine gradient.' },
+  accept: { ...base, type: 'accept', actorPerspective: 'verifier', verificationId: 'verify-1', testerRole: 'student-verifier', consented: true, definedTestConditions: 'Main gate to admissions, dry daylight conditions.', reason: 'Journey completed under defined conditions.' },
+  reject: { ...base, type: 'reject', actorPerspective: 'verifier', verificationId: 'verify-1', testerRole: 'student-verifier', consented: true, definedTestConditions: 'Main gate to admissions, dry daylight conditions.', reason: 'Landing remains obstructed.' },
+  inspect: { ...base, type: 'request_inspection', actorPerspective: 'verifier', verificationId: 'verify-1', testerRole: 'student-verifier', consented: true, definedTestConditions: 'Gradient requires professional assessment.', reason: 'Bounded retest cannot responsibly determine gradient.' },
 }
 
 describe('transitionBarrier', () => {
@@ -88,5 +88,17 @@ describe('transitionBarrier', () => {
     const result = transitionBarrier(state, { ...commands.accept, ...override } as TransitionCommand)
     expect(result).toMatchObject({ ok: false })
     if (!result.ok) expect(result.error.toLowerCase()).toContain(error)
+  })
+
+  it('derives the repair owner from state and ignores a caller claim of a different owner', () => {
+    const state = stateAt('awaiting_verification')
+    const misleadingCommand = {
+      ...commands.accept,
+      testerRole: 'facilities-officer',
+      repairOwnerRole: 'outside-contractor',
+    } as unknown as TransitionCommand
+    const result = transitionBarrier(state, misleadingCommand)
+    expect(result).toMatchObject({ ok: false })
+    if (!result.ok) expect(result.error.toLowerCase()).toContain('independent')
   })
 })

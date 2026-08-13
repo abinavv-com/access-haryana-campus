@@ -19,7 +19,6 @@ export type TransitionCommand =
 interface VerificationCommand {
   verificationId: string
   testerRole: string
-  repairOwnerRole: string
   consented: boolean
   definedTestConditions: string
 }
@@ -75,7 +74,7 @@ export function transitionBarrier(state: DemoState, command: TransitionCommand):
   if (command.type === 'accept' || command.type === 'reject' || command.type === 'request_inspection') {
     if (!workOrder?.repairEvidence.length) return fail(state, 'Repair evidence is required before verification.')
     if (!command.consented) return fail(state, 'Voluntary tester consent is required.')
-    if (!command.testerRole.trim() || command.testerRole === command.repairOwnerRole) return fail(state, 'An independent verifier is required.')
+    if (!command.testerRole.trim() || command.testerRole === workOrder.ownerRole) return fail(state, 'An independent verifier is required.')
     if (!command.definedTestConditions.trim()) return fail(state, 'Defined test conditions are required.')
   }
 
