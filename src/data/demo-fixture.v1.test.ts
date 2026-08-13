@@ -1,3 +1,5 @@
+import { existsSync, readFileSync } from 'node:fs'
+import { resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
 
 import { createDemoFixture, fixtureIds } from './demo-fixture.v1'
@@ -93,9 +95,26 @@ describe('createDemoFixture', () => {
     expect(evidence.length).toBeGreaterThan(0)
     expect(evidence.every(({ altText }) => altText.trim().length >= 24)).toBe(true)
     expect(evidence.map(({ altText }) => altText)).toEqual([
-      'Stored materials narrow the level landing on the main gate to admissions route.',
-      'Ramp approach viewed from the lower landing for gradient screening.',
-      'Path junction has no directional sign pointing toward the admissions office.',
+      'Illustrative example of tactile paving obstructed by street furniture and other objects.',
+      'Illustrative example of a shattered tactile paving tile creating an uneven surface.',
+      'Illustrative example of an accessible entrance ramp viewed from its approach.',
+      'Illustrative example of a long gradual pathway ramp leading to tactile paving and a curb cut.',
+      'Illustrative example of an accessibility sign used for route wayfinding.',
     ])
+  })
+
+  it('resolves every evidence path through Vite public and attributes every evidence ID', () => {
+    const evidence = createDemoFixture().barriers.flatMap((barrier) => barrier.evidence)
+    const ledgerPath = resolve(process.cwd(), 'public/media/ATTRIBUTION.md')
+
+    expect(evidence).toHaveLength(5)
+    expect(existsSync(ledgerPath)).toBe(true)
+
+    const ledger = readFileSync(ledgerPath, 'utf8')
+    evidence.forEach(({ id, path }) => {
+      expect(path).toMatch(/^\/media\/[^/]+\.(?:jpg|jpeg|png)$/i)
+      expect(existsSync(resolve(process.cwd(), 'public', path.slice(1)))).toBe(true)
+      expect(ledger).toContain(`\`${id}\``)
+    })
   })
 })
