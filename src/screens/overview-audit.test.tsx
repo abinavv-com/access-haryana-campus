@@ -35,6 +35,7 @@ describe('guided audit', () => {
     expect(screen.getByText(/2024 · section 6\.2 · screening check/i)).toBeInTheDocument()
     expect(screen.getByRole('img', { name: /illustrative example of tactile paving obstructed/i })).toBeInTheDocument()
     expect(screen.getByText(/not a compliance determination/i)).toBeInTheDocument()
+    expect(screen.getByText(/avoid identifiable people or personal data/i).closest('p')).toHaveTextContent(/fictional demo/i)
   })
 
   test('focuses an error summary when required evidence is deselected', async () => {
@@ -43,18 +44,25 @@ describe('guided audit', () => {
     await user.click(screen.getByRole('checkbox', { name: /select illustrative obstruction photo/i }))
     await user.click(screen.getByRole('button', { name: /submit screening finding/i }))
     expect(screen.getByRole('alert')).toHaveFocus()
-    expect(screen.getByRole('alert')).toHaveTextContent(/select at least one supporting evidence photo/i)
+    expect(screen.getByRole('alert')).toHaveTextContent(/supporting evidence is required/i)
   })
 
-  test('accepts unable to measure and submits by keyboard through the reducer', async () => {
+  test('requires a reason when unable to measure and preserves it in the record and event', async () => {
     const navigate = vi.fn()
     const user = userEvent.setup()
-    render(<Harness navigate={navigate} />)
+    function InspectableHarness() { const [state,dispatch]=useReducer(demoReducer,undefined,createDemoFixture); return <><AuditScreen state={state} dispatch={dispatch} navigate={navigate}/><output data-testid="record">{state.barriers.at(-1)?.description}</output><output data-testid="event">{state.activity.at(-1)?.reason}</output></> }
+    render(<InspectableHarness />)
     await user.click(screen.getByRole('radio', { name: /unable to measure/i }))
-    await user.tab()
+    const reason=screen.getByRole('textbox',{name:/why could the measurement not be taken/i})
     screen.getByRole('button', { name: /submit screening finding/i }).focus()
     await user.keyboard('{Enter}')
-    expect(screen.getByTestId('count')).toHaveTextContent('4')
+    expect(screen.getByRole('alert')).toHaveTextContent(/explain why the measurement could not be taken/i)
+    expect(navigate).not.toHaveBeenCalled()
+    await user.type(reason,'Stored materials blocked safe access to the landing edge.')
+    screen.getByRole('button', { name: /submit screening finding/i }).focus()
+    await user.keyboard('{Enter}')
+    expect(screen.getByTestId('record')).toHaveTextContent(/stored materials blocked safe access/i)
+    expect(screen.getByTestId('event')).toHaveTextContent(/stored materials blocked safe access/i)
     expect(navigate).toHaveBeenCalledWith('/barriers/audit-obstruction-2026')
   })
 })

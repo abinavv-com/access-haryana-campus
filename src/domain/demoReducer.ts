@@ -40,7 +40,8 @@ function verificationInput(state: DemoState, command: TransitionCommand): {
 export function demoReducer(state: DemoState, action: DemoAction): DemoState {
   if (action.type === 'RESET_DEMO') return createDemoFixture()
   if (action.type === 'SUBMIT_AUDIT') {
-    if (state.barriers.some(item => item.id === action.barrier.id) || action.barrier.status !== 'observed' || action.barrier.evidence.length === 0) return state
+    const consistentEvent = action.event.barrierId === action.barrier.id && action.event.toStatus === action.barrier.status && action.event.dataLabel === action.barrier.dataLabel && action.event.fromStatus === null
+    if (!consistentEvent || state.barriers.some(item => item.id === action.barrier.id) || action.barrier.status !== 'observed' || action.barrier.evidence.length === 0) return state
     return { ...state, barriers: [...state.barriers, structuredClone(action.barrier)], activity: [...state.activity, structuredClone(action.event)] }
   }
 
