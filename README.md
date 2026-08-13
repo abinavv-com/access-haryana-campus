@@ -25,6 +25,8 @@ git diff --check
 
 The production output is written to `dist/`.
 
+Task 10 browser acceptance evidence is retained in `verification/task-10/`. It includes the completed keyboard journey, 200%-equivalent reflow, forced-colours rendering, missing-image fallback, and the one-page print PDF plus its inspected preview.
+
 ## Demo controls
 
 Use the **Simulated role** selector when the journey moves from Auditor to Facilities and then Verifier. This changes presentation context only; it is not authentication or an access-control mechanism.

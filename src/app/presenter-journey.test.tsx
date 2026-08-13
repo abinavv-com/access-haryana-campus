@@ -14,6 +14,7 @@ test('a presenter completes the fictional audit-to-impact journey through visibl
 
   expect(screen.getByText(/current perspective: auditor/i)).toBeInTheDocument()
   await user.click(screen.getByRole('button', { name: /continue guided audit/i }))
+  expect(screen.getByRole('main')).toHaveFocus()
   await user.click(screen.getByRole('button', { name: /submit screening finding/i }))
 
   expect(screen.getByRole('heading', { name: /approach landing requires designated review/i })).toBeInTheDocument()

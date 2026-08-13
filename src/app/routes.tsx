@@ -13,6 +13,7 @@ export function RouteContent({ state, dispatch }: { state: DemoState; dispatch: 
   const navigate = (next: string) => {
     window.history.pushState({}, '', next)
     window.dispatchEvent(new PopStateEvent('popstate'))
+    window.setTimeout(() => document.getElementById('main-content')?.focus(), 0)
   }
   if (path === '/audit') return <AuditScreen state={state} dispatch={dispatch} navigate={navigate} />
   if (path === '/impact') return <ImpactScreen state={state} navigate={navigate} />

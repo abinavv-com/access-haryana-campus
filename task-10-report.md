@@ -1,36 +1,46 @@
 # Task 10 report — end-to-end demo verification
 
-## Implemented
+## Result
 
-- Added one presenter-level integration test that starts from a fresh deterministic fictional fixture and completes audit → validate → prioritise → assign → repair evidence → independent acceptance → impact using visible controls.
-- Made the lifecycle rail follow the barrier identified by the active barrier/work-order/verification route instead of always showing the first seeded barrier.
-- Added a visible work-order continuation into independent verification.
-- Added `README.md` with local commands, fictional-data and certification caveats, simulated-role guidance, reset semantics, and the media-attribution location.
+The fresh fictional case completes audit → validate → prioritise → assign → repair evidence → independent acceptance → impact through keyboard activation of visible controls. The lifecycle rail follows the active case, route changes move focus to `<main>`, the work-order screen visibly continues to verification, and the impact report prints on one A4 page.
 
-## TDD evidence
+## TDD and defects fixed
 
-The new presenter test initially failed after validation because the lifecycle rail remained on the first seeded barrier. After the route-aware status fix it progressed to, and verified, the previously missing work-order-to-verification continuation. The focused test then passed (1/1).
+1. The original presenter test failed because the lifecycle rail followed the first seeded barrier. Route-aware status fixed it.
+2. The connected test exposed the missing work-order continuation. A visible verification continuation fixed it.
+3. Round-one keyboard inspection showed focus falling to `<body>` after navigation. A presenter-test assertion failed with `<body>` focused; route navigation now schedules focus on `#main-content`, and the test passes.
+4. Fresh print inspection showed `1 / 2` pages. Print-only typography and spacing were reduced; regenerated preview shows `1 / 1` with the heading, metrics, traceability table, and disclaimer legible.
 
-## Automated verification
+## Browser acceptance evidence
 
-- `npm test`: 11 files, 73 tests passed.
-- `npm run build`: rerun after resolving the isolated-component TypeScript boundary.
-- `git diff --check`: rerun before commit.
-- The automated presenter path completed in approximately one second, comfortably below five minutes as an automation check. This is not a substitute for timing an unfamiliar human presenter.
+All browser commands used `agent-browser` against `http://127.0.0.1:5173` from a fresh local Vite server.
 
-## Browser inspection evidence and limits
+- **Keyboard-only core journey:** each visible control was focused and activated with `press Enter` or `press Space`; role selects were changed using arrow keys. Final evaluation was `{"url":"/impact","heading":"Bounded verified outcomes","verified":"1","role":"verifier"}`. Agent-run elapsed time: **7.34 seconds**, under five minutes. Artifact: `verification/task-10/keyboard-impact.png`.
+- **Focus visibility/order:** initial Tab reached the skip link with a 3px computed outline. The new automated route assertion verifies that focus moves to the main landmark after navigation. Core actions are native buttons, checkbox, and select controls and completed without pointer activation.
+- **200%-equivalent reflow:** the audit was rendered with CSS page zoom `2` at a 780px viewport, producing `zoom: "2"`, `clientWidth: 765`, `scrollWidth: 765`, `overflow: false`; artifact: `verification/task-10/audit-200-percent.png`. Key-screen narrow reflow was separately checked at 390px: impact `clientWidth: 390`, `scrollWidth: 390`, `overflow: false`; artifact: `verification/task-10/impact-390-reflow.png`.
+- **Forced colours:** Chromium launched with `--force-high-contrast`; `matchMedia('(forced-colors: active)').matches` returned `true`. At 390px, three buttons remained present, current-stage text was `1ObservedAuditorCurrent`, and document overflow was false. Artifact: `verification/task-10/forced-colors-audit.png`.
+- **Missing-image fallback:** the audit evidence image URL was replaced with `/media/deliberately-missing-task10.jpg`. Evaluation returned `fallback: "Illustrative evidence unavailable"`, preserved the descriptive `aria-label`, and reported `imageCount: 0`. Artifact: `verification/task-10/missing-image-fallback.png`.
+- **Print:** `agent-browser pdf verification/task-10/impact-print.pdf` generated the final PDF. It was reopened in Chromium's PDF viewer and visually inspected at original detail. The viewer reports `1 / 1`; heading, three metrics, traceability content, and disclaimer are visible without clipping. Artifacts: `verification/task-10/impact-print.pdf` and `verification/task-10/impact-print-preview.png`.
 
-Using a fresh headless Chromium session against the local Vite server:
+Representative commands (all exited 0):
 
-- Desktop viewport used: 1440 × 900.
-- Mobile viewport used: 390 × 844; measured document scroll width was 375px against a 390px viewport, so no page-level horizontal overflow was detected at the landing screen.
-- Keyboard Tab moved focus to the skip link; computed focus styling reported a visible outline.
-- Reduced-motion emulation was active (`prefers-reduced-motion: reduce` matched).
-- A mobile full-page screenshot and print PDF were generated for inspection and then removed; they are not repository artifacts.
-- A missing-image network-abort check was attempted, but its captured accessibility output was inconclusive, so no manual-browser pass is claimed for that item.
+```powershell
+agent-browser --session keyboard press Enter
+agent-browser --session keyboard press Space
+agent-browser --session zoom eval "document.documentElement.style.zoom='2'"
+agent-browser --session forced --args "--force-high-contrast" open http://127.0.0.1:5173/audit
+agent-browser --session fallback eval "document.querySelector('.evidence-card img').src='/media/deliberately-missing-task10.jpg'"
+agent-browser --session printsource pdf verification/task-10/impact-print.pdf
+```
 
-Forced-colours emulation, true browser 200% zoom/reflow, a human keyboard-only run through every stage, visual print-preview review, and a timed unfamiliar-presenter run were not reliably available through the headless CLI used here. The stylesheet includes forced-colours, reduced-motion, responsive, and print rules, and automated component/integration coverage passed, but those manual checks remain explicit release-verification items.
+## Final command evidence
 
-## Self-review
+Recorded immediately before commit:
 
-The production changes are limited to presenter-path integration: route-aware lifecycle state and one continuation control. Domain transition rules, validation, calculations, fixture semantics, and impact qualification were not broadened or bypassed.
+- `npm test` — exit 0; 11 test files and 73 tests passed.
+- `npm run build` — exit 0; TypeScript and Vite production build completed, 39 modules transformed.
+- `git diff --check` — exit 0.
+
+## Scope and remaining concerns
+
+The implementation changes remain integration/accessibility focused: route-aware lifecycle state, one continuation control, route focus management, and print-only layout. Domain transitions and qualification language are unchanged. Timing is an agent-driven keyboard run, not an unfamiliar human-presenter study. The 200% check uses standards-supported CSS page zoom plus a separate 390px reflow check because the installed headless CLI does not expose browser zoom level directly.
