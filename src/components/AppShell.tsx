@@ -27,7 +27,8 @@ export function AppShell(props: Props) {
   const cancelRef = useRef<HTMLButtonElement>(null)
   const confirmRef = useRef<HTMLButtonElement>(null)
   const hasOpenedDialog = useRef(false)
-  const primaryStatus: BarrierStatus = state.barriers[0]?.status ?? 'observed'
+  const routeBarrierId = window.location.pathname.match(/^\/(?:barriers|work-orders|verification)\/([^/]+)$/)?.[1]
+  const primaryStatus: BarrierStatus = state.barriers.find(barrier => barrier.id === routeBarrierId)?.status ?? state.barriers[0]?.status ?? 'observed'
 
   useEffect(() => {
     if (confirming) {

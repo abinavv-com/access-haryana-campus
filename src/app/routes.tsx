@@ -18,6 +18,6 @@ export function RouteContent({ state, dispatch }: { state: DemoState; dispatch: 
   if (path === '/impact') return <ImpactScreen state={state} navigate={navigate} />
   if (path.startsWith('/verification/')) return <VerificationScreen state={state} dispatch={dispatch} barrierId={path.split('/').at(-1)!} navigate={navigate} />
   if (path.startsWith('/barriers/')) return <BarrierScreen state={state} dispatch={dispatch} barrierId={path.split('/').at(-1)!} navigate={navigate} />
-  if (path.startsWith('/work-orders/')) return <WorkOrderScreen state={state} dispatch={dispatch} barrierId={path.split('/').at(-1)!} />
+  if (path.startsWith('/work-orders/')) return <WorkOrderScreen state={state} dispatch={dispatch} barrierId={path.split('/').at(-1)!} navigate={navigate} />
   return <OverviewScreen state={state} onStartAudit={() => navigate('/audit')} />
 }
