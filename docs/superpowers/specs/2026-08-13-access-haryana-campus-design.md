@@ -14,9 +14,11 @@ The application is designed for a short live presentation. A presenter must be a
 
 The product is a barrier-to-fix workflow, not a complaint map. A barrier only counts as resolved after repair evidence is submitted and an affected user retests the journey.
 
-Core lifecycle:
+Simplified presentation lifecycle:
 
 `Observed → Validated → Prioritised → Assigned → Fixed → User verified`
+
+Canonical system states are `observed`, `validated`, `prioritised`, `assigned`, `awaiting_verification`, `verified`, and `rework_required`. “Fixed” in the presentation rail means repair evidence has been submitted and is awaiting independent verification; it never means completed or compliant. Potential immediate hazards also carry an escalation flag and interim-control record without bypassing the canonical state.
 
 ## Scope
 
@@ -33,17 +35,18 @@ It will use realistic sample data and local browser persistence. It will not inc
 
 ## Demo narrative
 
-The seeded scenario follows a wheelchair user travelling from the main gate to the admissions office. The route contains a steep entrance ramp, an obstructed landing, and missing directional signage.
+The seeded scenario follows a fictional mobility-access requirement on the journey from the main gate to the admissions office. One obstructed landing is the primary case taken through the full lifecycle. A ramp-gradient screening finding and missing directional signage remain visible as backlog items.
 
 During the demo:
 
 1. A student auditor selects the route and performs a standards-aligned screening.
-2. The auditor records the ramp gradient and adds photographic evidence.
-3. The command centre ranks the barrier using safety, frequency and fixability.
-4. A facilities officer assigns a repair, owner, cost band and deadline.
-5. Repair evidence changes the item to awaiting verification, not completed.
-6. A student verifier retests the route and either accepts or rejects the result.
-7. The impact report compares the baseline and verified journey outcomes.
+2. The auditor records structured measurements and supporting photographic evidence. An observation is never labelled non-compliant.
+3. A fictional designated reviewer validates or corrects the screening finding. Validation records reviewer role, date, disposition and measurement changes.
+4. The command centre prioritises the barrier using severity, essential-service impact, absence of a safe dignified alternative, affected journeys and urgency. Fixability informs delivery sequencing only and cannot lower rights or safety urgency.
+5. A facilities officer assigns a repair, owner, cost band and deadline.
+6. Repair evidence changes the item to awaiting verification, not completed.
+7. A consenting independent tester retests the defined journey and conditions and either accepts it for that bounded test or sends it to rework.
+8. The impact report compares illustrative baseline and bounded verified outcomes and links each claim to its evidence chain.
 
 ## Information architecture
 
@@ -54,6 +57,7 @@ During the demo:
 - Primary navigation
 - Accessibility controls: text size, contrast and reduced motion
 - Demo Journey rail showing the six stages and current progress
+- Persistent “Demo mode — fictional records” banner and simulated perspective switcher for Auditor, Facilities and Verifier; this is presentation context, not authentication or access control
 - “Reset demo” control with confirmation
 
 ### Overview
@@ -69,6 +73,7 @@ During the demo:
 
 - Route selection and step-by-step field checklist
 - Applicable guideline reference beside each check
+- Exact standard source, edition/year, clause or section and check type beside every standards-related prompt
 - Measurement inputs with units and acceptable range guidance
 - Evidence-photo selection using seeded local images
 - Draft preservation and clear validation errors
@@ -81,6 +86,7 @@ During the demo:
 - Priority calculation explained in plain language
 - Timeline of every state transition
 - Action to validate and create a work order
+- Immediate-hazard flag and interim-control record for warning, obstruction removal, alternate route, restricted use or urgent escalation
 
 ### Repair work order
 
@@ -93,18 +99,20 @@ During the demo:
 
 - Journey retest checklist
 - Before/after task completion and time comparison
-- Accept, reject or request another inspection
+- Accept for the defined journey/test conditions, reject to rework, or request another inspection
 - Optional accessibility feedback without recording disability identity
 - Rejection returns the work order to action required with a reason
 
 ### Impact report
 
-- Verified barriers removed
-- Essential journeys made usable
+- Verified repairs for defined journeys and test conditions
+- Defined journey tests completed successfully
 - Median repair time
 - Estimated pilot spend and cost per verified fix
-- Before/after journey success and completion time
+- Before/after journey success and completion time, each traceable to source records
 - Print-friendly one-page evidence summary for an Ideathon pitch
+
+All dashboard values, dates, users, costs and outcomes are conspicuously labelled “illustrative demo data.” The primary story does not use a median or cost-per-fix calculation unless the seeded fixture contains enough records for that aggregate to be meaningful. No bounded retest is described as universal usability, professional assessment, certification or legal compliance.
 
 ## Visual direction
 
@@ -130,6 +138,7 @@ The memorable visual device will be the barrier lifecycle: every screen shows th
 - Prefer environmental evidence: ramps, entrances, corridors, signage and pathways.
 - Use alt text that describes the relevant barrier or repair evidence.
 - Seed the audit with a coherent before/after set; if a genuine matched pair cannot be licensed, clearly label the images as illustrative demo evidence rather than representing an actual repair.
+- Treat images as supporting evidence only. Post-repair measurements and structured retest results are required when the original finding involved dimensions, gradient or performance.
 
 ## State model
 
@@ -142,11 +151,15 @@ Primary entities:
 - `Verification`: decision, retest measurements, feedback and timestamp
 - `ActivityEvent`: immutable display timeline of state changes
 
+Every transition records actor perspective, prerequisites, time and reason. Invalid transitions change nothing and explain the missing prerequisite. Failed verification preserves all earlier evidence and creates `rework_required`; resubmission can return it to `awaiting_verification`. An additional-inspection request stays `awaiting_verification` and appends an event. Overdue and immediate-hazard conditions are flags, not fabricated lifecycle completion states.
+
+An observation becomes `validated` only after review by the designated fictional reviewer. A record becomes `verified` only when repair evidence exists and a consenting tester independent from the repair owner accepts the result for the explicitly defined journey, access requirement and test conditions. No diagnosis is requested, participation is voluntary, refusal has no consequence, and professional assessment is required when the selected check cannot be responsibly verified through the bounded retest.
+
 State is seeded from a versioned fixture and persisted to `localStorage`. Reset restores the original fixture. The application will validate transitions so a barrier cannot become verified without repair evidence and a verification decision.
 
 ## Accessibility and privacy requirements
 
-- Target WCAG 2.2 AA for the prototype interface.
+- Target WCAG 2.2 AA for the prototype interface, including semantic landmarks and headings, skip navigation, logical focus order, focus management after navigation and validation, accessible notifications, screen-reader names/descriptions, non-drag alternatives, 200% zoom/reflow, forced-colours support and minimum target sizing.
 - All core interactions must work with keyboard navigation.
 - Status must never be communicated through colour alone.
 - Forms must have associated labels, instructions and error summaries.
@@ -155,6 +168,17 @@ State is seeded from a versioned fixture and persisted to `localStorage`. Reset 
 - No names, Aadhaar numbers, disability diagnoses, faces or precise personal route histories are required.
 - Campus locations use zones rather than publishing security-sensitive detailed floor plans.
 - The prototype is a standards-aligned screening and workflow tool, not legal certification.
+- Accessibility controls supplement rather than replace browser and operating-system preferences.
+- Before/after media has separate structured descriptions and never depends on a visual comparison slider.
+- All fictional case records can be cleared from the device; accessibility preferences persist separately from demo-case reset.
+
+## Standards baseline and terminology
+
+The primary screening source is the Government of India’s **Accessibility Guidelines and Standards for Higher Education Institutions and Universities (2024)** as listed by the Department of Empowerment of Persons with Disabilities. The **Harmonised Guidelines and Standards for Universal Accessibility in India (2021)** may be referenced for built-environment details when relevant. Every seeded check must name its actual source, year and clause/section in the fixture; no clause will be invented during implementation.
+
+The UI uses “barrier report” or “screening finding” before validation and “verified repair for this journey and test conditions” after an accepted retest. It reserves “compliant,” “certified” and “universally accessible” for qualified assessment outside this prototype.
+
+Measurements use explicit units, plausible input bounds and plain-language rise/run help. Implausible values request confirmation rather than asserting failure. “Unable to measure” is a valid report outcome. The workflow separately records whether a safe, signed, available and comparably dignified alternative route exists; temporary routing is an interim control, never a permanent verified fix.
 
 ## Error and empty states
 
@@ -163,6 +187,7 @@ State is seeded from a versioned fixture and persisted to `localStorage`. Reset 
 - Empty filters provide a recovery action.
 - Missing demo image data falls back to an accessible evidence placeholder.
 - Local persistence failure leaves the current session usable and explains that reset-on-refresh may occur.
+- Corrupt or unsupported stored data falls back to the versioned fictional fixture with a non-blocking warning.
 
 ## Testing strategy
 
@@ -179,12 +204,14 @@ Automated tests will cover:
 - Local persistence and reset behaviour
 - Filtering by status and severity
 - Critical keyboard-driven interaction paths
+- Safety escalation, rework and invalid-transition paths
+- Exact traceability between every illustrative outcome and its barrier, work order, evidence, retest and timeline
 
-The final verification pass will include unit/component tests, production build, desktop and mobile browser inspection, keyboard navigation, visible focus, reduced motion and contrast checks.
+The final verification pass will include unit/component tests, production build, desktop and 390-pixel mobile browser inspection, keyboard navigation, visible focus, 200% zoom/reflow, forced colours, reduced motion, missing-image fallback, print output and UTF-8 content checks. The guided path uses prefilled inputs and one decisive interaction per stage so it can be completed in under five minutes.
 
 ## Success criteria
 
-The prototype succeeds when a presenter can complete the seeded audit-to-verification story in under five minutes, the state transitions are understandable without narration, and the final report demonstrates the difference between reporting barriers and verifying repairs.
+The prototype succeeds when a presenter can complete the seeded audit-to-verification story in under five minutes; an unfamiliar observer can identify the current simulated role, status and next action; no keyboard step is blocked; no invalid transition bypasses a prerequisite; all standards and impact language is visibly qualified; and every metric is traceable to fictional seeded evidence.
 
 ## Explicit exclusions
 
@@ -196,4 +223,4 @@ The prototype succeeds when a presenter can complete the seeded audit-to-verific
 - Automated statutory certification
 - Procurement, payments or contractor marketplace
 - Statewide analytics presented as real outcomes
-
+- Statutory accessibility determinations or claims that an illustrative image represents a real Haryana campus repair
