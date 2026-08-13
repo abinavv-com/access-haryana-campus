@@ -1,0 +1,1 @@
+:root{--canvas:#f3f1ea;--ink:#101820;--surface:#fff;--muted:#e8e5dc;--accent:#d85a1a;--accent-hover:#b94710;--focus:#1261a0;--verified:#176b45;--danger:#b42318;--border:rgba(16,24,32,.2);--radius:6px;--space-3:1.5rem;--space-4:2rem}html[data-text-size=large]{font-size:118.75%}html[data-high-contrast=true]{--canvas:#fff;--ink:#000;--muted:#fff;--border:#000}

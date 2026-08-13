@@ -1,0 +1,1 @@
+export function RouteContent(){return <section className="route-placeholder" aria-labelledby="page-title"><p className="eyebrow">Command centre</p><h1 id="page-title">Main gate → Admissions</h1><p>Follow one fictional screening finding from observation through independent user verification.</p><a className="button-primary" href="/audit">Continue guided audit</a></section>}
