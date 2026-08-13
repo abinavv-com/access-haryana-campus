@@ -48,7 +48,7 @@ describe('accessible application shell', () => {
 
     await user.click(screen.getByRole('checkbox', { name: /reduce motion/i }))
     expect(document.documentElement).toHaveAttribute('data-reduced-motion', 'true')
-    expect(localStorage.getItem('access-haryana-preferences')).toContain('"reducedMotion":true')
+    expect(localStorage.getItem('access-haryana-campus.preferences')).toContain('"reducedMotion":true')
 
     await user.click(screen.getByRole('button', { name: /reset demo/i }))
     await user.click(screen.getByRole('button', { name: /confirm reset/i }))
@@ -64,7 +64,7 @@ describe('accessible application shell', () => {
 
     expect(document.documentElement).toHaveAttribute('data-text-size', 'large')
     expect(document.documentElement).toHaveAttribute('data-high-contrast', 'true')
-    expect(localStorage.getItem('access-haryana-preferences')).toContain('"highContrast":true')
+    expect(localStorage.getItem('access-haryana-campus.preferences')).toContain('"highContrast":true')
   })
 
   test('requires confirmation before reset and allows cancellation', async () => {
@@ -78,5 +78,37 @@ describe('accessible application shell', () => {
     await user.click(screen.getByRole('button', { name: /cancel/i }))
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
     expect(confirm).not.toHaveBeenCalled()
+  })
+
+  test('contains dialog focus, closes with Escape, and restores focus to reset trigger', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+    const trigger = screen.getByRole('button', { name: /reset demo/i })
+
+    await user.click(trigger)
+    const cancel = screen.getByRole('button', { name: /cancel/i })
+    const confirmReset = screen.getByRole('button', { name: /confirm reset/i })
+    expect(cancel).toHaveFocus()
+
+    await user.tab({ shift: true })
+    expect(confirmReset).toHaveFocus()
+    await user.tab()
+    expect(cancel).toHaveFocus()
+
+    await user.keyboard('{Escape}')
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+    expect(trigger).toHaveFocus()
+  })
+
+  test('remains usable when preference storage is unavailable', async () => {
+    const getItem = vi.spyOn(Storage.prototype, 'getItem').mockImplementation(() => { throw new Error('blocked') })
+    const setItem = vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => { throw new Error('blocked') })
+
+    expect(() => render(<App />)).not.toThrow()
+    await userEvent.click(screen.getByRole('checkbox', { name: /reduce motion/i }))
+    expect(document.documentElement).toHaveAttribute('data-reduced-motion', 'true')
+
+    getItem.mockRestore()
+    setItem.mockRestore()
   })
 })

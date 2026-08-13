@@ -40,3 +40,11 @@ Implemented the production React application shell and responsive six-stage evid
 
 - Route destinations are intentionally shell-only placeholders for later screen tasks.
 - Browser-level visual, zoom and forced-colours inspection remains part of the final application verification pass.
+
+## Fix round 1
+
+- Added modal focus lifecycle: Cancel receives initial focus, Tab and Shift+Tab remain contained, Escape cancels, and focus returns to the Reset demo trigger.
+- Added user-event coverage for focus initialization, forward/reverse containment, Escape and restoration.
+- Aligned the preference key to `access-haryana-campus.preferences`.
+- Guarded preference reads and writes so blocked or unavailable web storage does not prevent the shell or controls from working during the current session.
+- Focused suite after fixes: 8/8 passed.
