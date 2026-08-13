@@ -21,12 +21,15 @@ export interface VerificationInput {
   decision: 'accepted' | 'rejected' | 'additional_inspection'
   consented: boolean
   testerRole: string
-  repairOwnerRole: string
-  hasRepairEvidence: boolean
   journeyId: string
   accessRequirement: string
   definedTestConditions: string
   reason: string
+}
+
+export interface TrustedVerificationContext {
+  ownerRole: string
+  hasRepairEvidence: boolean
 }
 
 export function validateAudit(input: AuditInput): string[] {
@@ -56,11 +59,11 @@ export function validateWorkOrder(input: WorkOrderInput): string[] {
   return errors
 }
 
-export function validateVerification(input: VerificationInput): string[] {
+export function validateVerification(input: VerificationInput, trustedWorkOrder: TrustedVerificationContext): string[] {
   const errors: string[] = []
-  if (!input.hasRepairEvidence) errors.push('Repair evidence is required before verification.')
+  if (!trustedWorkOrder.hasRepairEvidence) errors.push('Repair evidence is required before verification.')
   if (!input.consented) errors.push('Voluntary tester consent is required.')
-  if (!input.testerRole.trim() || input.testerRole.trim() === input.repairOwnerRole.trim()) errors.push('An independent verifier is required.')
+  if (!input.testerRole.trim() || input.testerRole.trim() === trustedWorkOrder.ownerRole.trim()) errors.push('An independent verifier is required.')
   if (!input.journeyId.trim()) errors.push('A defined journey is required.')
   if (!input.accessRequirement.trim()) errors.push('An access requirement is required.')
   if (!input.definedTestConditions.trim()) errors.push('Defined test conditions are required.')

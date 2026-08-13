@@ -46,9 +46,10 @@ describe('validateVerification', () => {
     definedTestConditions: 'Dry daylight conditions',
     reason: '',
   }
+  const trustedWorkOrder = { ownerRole: 'facilities', hasRepairEvidence: true }
 
   it('requires acceptance to be bounded to a journey, access requirement and test conditions', () => {
-    expect(validateVerification({ ...valid, journeyId: '', accessRequirement: '', definedTestConditions: '' })).toEqual([
+    expect(validateVerification({ ...valid, journeyId: '', accessRequirement: '', definedTestConditions: '' }, trustedWorkOrder)).toEqual([
       'A defined journey is required.',
       'An access requirement is required.',
       'Defined test conditions are required.',
@@ -56,6 +57,16 @@ describe('validateVerification', () => {
   })
 
   it('requires a reason when verification is rejected', () => {
-    expect(validateVerification({ ...valid, decision: 'rejected', reason: '  ' })).toContain('A rejection reason is required.')
+    expect(validateVerification({ ...valid, decision: 'rejected', reason: '  ' }, trustedWorkOrder)).toContain('A rejection reason is required.')
+  })
+
+  it('derives repair ownership from trusted work-order context and ignores a caller claim', () => {
+    const misleadingSubmission = {
+      ...valid,
+      testerRole: 'facilities',
+      repairOwnerRole: 'outside-contractor',
+    }
+
+    expect(validateVerification(misleadingSubmission, trustedWorkOrder)).toContain('An independent verifier is required.')
   })
 })

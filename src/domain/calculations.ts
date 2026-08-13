@@ -26,7 +26,8 @@ const urgencyScore: Record<PriorityInput['urgency'], number> = { routine: 0, soo
 
 export function calculatePriority(input: PriorityInput): PriorityResult {
   if (input.overrideBand && !input.overrideReason?.trim()) throw new Error('A reason is required to override calculated priority.')
-  const journeyScore = Math.min(15, Math.max(0, Math.trunc(input.affectedJourneys)) * 5)
+  const affectedJourneys = Number.isFinite(input.affectedJourneys) ? input.affectedJourneys : 0
+  const journeyScore = Math.min(15, Math.max(0, Math.trunc(affectedJourneys)) * 5)
   const score = severityScore[input.severity]
     + (input.essentialServiceImpact ? 20 : 0)
     + routeScore[input.alternativeRouteQuality]

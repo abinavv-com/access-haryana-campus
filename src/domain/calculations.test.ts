@@ -20,6 +20,13 @@ describe('calculatePriority', () => {
     expect(() => calculatePriority({ ...urgentCase, overrideBand: 'low' })).toThrow('A reason is required to override calculated priority.')
     expect(calculatePriority({ ...urgentCase, overrideBand: 'low', overrideReason: 'Duplicate temporary control is active.' }).band).toBe('low')
   })
+
+  it.each([Number.NaN, Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY])('treats non-finite affected journey count %s as zero', (affectedJourneys) => {
+    expect(calculatePriority({
+      severity: 'low', essentialServiceImpact: false, alternativeRouteQuality: 'comparable',
+      affectedJourneys, urgency: 'routine', fixability: 'standard',
+    })).toEqual({ score: 5, band: 'low', sequencing: 'standard' })
+  })
 })
 
 describe('calculateImpact', () => {
