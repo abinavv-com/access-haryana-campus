@@ -27,3 +27,12 @@
 ## Remaining concern
 
 - The post-submit barrier URL intentionally resolves to the generic non-audit route until Task 8 supplies the barrier-record screen.
+
+## Fix round 2 — dimensional provenance
+
+- Added a `clear_width` audit measurement variant carrying `widthMm` and explicit implausible-value confirmation.
+- Clear-width validation rejects non-positive values and asks for confirmation outside the broad 300–5,000 mm plausibility band; it does not make a standards-compliance decision.
+- Preserved the existing `measured` rise/run variant and its ramp-specific validation unchanged.
+- Guided audit now validates exactly the displayed 860 mm clear width. No fabricated rise or run is passed through validation or stored in the evidence trail.
+- RED: the new domain test received missing rise/run errors for a clear-width input, proving the model mismatch.
+- GREEN: focused validation/screen tests passed 13/13; full suite passed 65/65; production build and `git diff --check` passed.

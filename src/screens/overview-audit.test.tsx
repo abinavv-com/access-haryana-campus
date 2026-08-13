@@ -65,4 +65,13 @@ describe('guided audit', () => {
     expect(screen.getByTestId('event')).toHaveTextContent(/stored materials blocked safe access/i)
     expect(navigate).toHaveBeenCalledWith('/barriers/audit-obstruction-2026')
   })
+
+  test('submits only the displayed clear-width measurement provenance', async () => {
+    const user=userEvent.setup();const navigate=vi.fn()
+    function InspectableHarness(){const[state,dispatch]=useReducer(demoReducer,undefined,createDemoFixture);return <><AuditScreen state={state} dispatch={dispatch} navigate={navigate}/><output data-testid="record">{state.barriers.at(-1)?.description}</output><output data-testid="event">{state.activity.at(-1)?.reason}</output></>}
+    render(<InspectableHarness/>);await user.click(screen.getByRole('button',{name:/submit screening finding/i}))
+    expect(screen.getByTestId('record')).toHaveTextContent(/clear width screened at 860 mm/i)
+    expect(screen.getByTestId('event')).toHaveTextContent(/clear width screened at 860 mm/i)
+    expect(screen.getByTestId('record')).not.toHaveTextContent(/rise|run|75 mm/i)
+  })
 })

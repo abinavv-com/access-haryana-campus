@@ -20,6 +20,12 @@ describe('validateAudit', () => {
     expect(errors).toContain('Confirm the implausible rise/run values before continuing.')
     expect(validateAudit({ ...validAudit, measurement: { ...validAudit.measurement, riseMm: 1200, runMm: 100, implausibleConfirmed: true } })).toEqual([])
   })
+
+  it('validates a landing clear-width measurement without inventing ramp dimensions', () => {
+    expect(validateAudit({ evidenceIds: ['evidence-1'], measurement: { outcome: 'clear_width' as const, widthMm: 860, implausibleConfirmed: false } })).toEqual([])
+    expect(validateAudit({ evidenceIds: ['evidence-1'], measurement: { outcome: 'clear_width' as const, widthMm: 50, implausibleConfirmed: false } })).toContain('Confirm the implausible clear-width value before continuing.')
+    expect(validateAudit({ evidenceIds: ['evidence-1'], measurement: { outcome: 'clear_width' as const, widthMm: 50, implausibleConfirmed: true } })).toEqual([])
+  })
 })
 
 describe('validateWorkOrder', () => {

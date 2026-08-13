@@ -2,6 +2,7 @@ import type { BarrierStatus } from './types'
 
 export type AuditMeasurement =
   | { outcome: 'measured'; riseMm: number; runMm: number; implausibleConfirmed: boolean }
+  | { outcome: 'clear_width'; widthMm: number; implausibleConfirmed: boolean }
   | { outcome: 'unable'; reason: string }
 
 export interface AuditInput {
@@ -38,6 +39,13 @@ export function validateAudit(input: AuditInput): string[] {
 
   if (input.measurement.outcome === 'unable') {
     if (!input.measurement.reason.trim()) errors.push('Explain why the measurement could not be taken.')
+    return errors
+  }
+
+  if (input.measurement.outcome === 'clear_width') {
+    const { widthMm, implausibleConfirmed } = input.measurement
+    if (!Number.isFinite(widthMm) || widthMm <= 0) errors.push('Clear width must be a positive measurement in millimetres.')
+    else if ((widthMm < 300 || widthMm > 5_000) && !implausibleConfirmed) errors.push('Confirm the implausible clear-width value before continuing.')
     return errors
   }
 
