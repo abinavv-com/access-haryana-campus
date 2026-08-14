@@ -25,6 +25,15 @@ function isEvidence(value: unknown): boolean {
     && hasString(value, 'altText') && hasString(value, 'capturedAt')
 }
 
+function isGuidelineReference(value: unknown): boolean {
+  return isRecord(value) && hasString(value, 'source') && typeof value.editionYear === 'number'
+    && hasString(value, 'section') && value.checkType === 'screening'
+}
+
+function isJourneyOutcome(value: unknown): boolean {
+  return value === undefined || (isRecord(value) && typeof value.succeeded === 'boolean' && typeof value.completionMinutes === 'number')
+}
+
 function everyRecord(value: unknown, guard: (item: unknown) => boolean): boolean {
   return Array.isArray(value) && value.every(guard)
 }
@@ -50,7 +59,8 @@ function isDemoState(value: unknown): value is DemoState {
       && hasString(item, 'title') && hasString(item, 'description') && hasString(item, 'campusZone')
       && isOneOf(item.severity, ['low', 'moderate', 'high', 'urgent'])
       && isOneOf(item.status, ['observed', 'validated', 'prioritised', 'assigned', 'awaiting_verification', 'verified', 'rework_required'])
-      && hasString(item, 'observedAt') && everyRecord(item.evidence, isEvidence))
+      && hasString(item, 'observedAt') && everyRecord(item.evidence, isEvidence)
+      && (typeof item.guidelineReference === 'undefined' || isGuidelineReference(item.guidelineReference)))
     && everyRecord(value.workOrders, (item) => isRecord(item) && hasString(item, 'id')
       && hasString(item, 'barrierId') && item.dataLabel === 'Illustrative demo data'
       && hasString(item, 'ownerRole') && hasString(item, 'remedy') && hasString(item, 'costBand')
@@ -59,7 +69,8 @@ function isDemoState(value: unknown): value is DemoState {
       && hasString(item, 'barrierId') && hasString(item, 'workOrderId')
       && item.dataLabel === 'Illustrative demo data'
       && isOneOf(item.decision, ['accepted', 'rejected', 'additional_inspection'])
-      && hasString(item, 'definedTestConditions') && hasString(item, 'timestamp'))
+      && hasString(item, 'definedTestConditions') && isJourneyOutcome(item.beforeOutcome) && isJourneyOutcome(item.afterOutcome)
+      && hasString(item, 'timestamp'))
     && everyRecord(value.activity, (item) => isRecord(item) && hasString(item, 'id')
       && hasString(item, 'barrierId') && item.dataLabel === 'Illustrative demo data'
       && isOneOf(item.actorPerspective, ['auditor', 'facilities', 'verifier'])

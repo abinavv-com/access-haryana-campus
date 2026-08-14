@@ -21,6 +21,8 @@ interface VerificationCommand {
   testerRole: string
   consented: boolean
   definedTestConditions: string
+  beforeOutcome?: { succeeded: boolean; completionMinutes: number }
+  afterOutcome?: { succeeded: boolean; completionMinutes: number }
 }
 
 export type TransitionResult =
@@ -76,6 +78,9 @@ export function transitionBarrier(state: DemoState, command: TransitionCommand):
     if (!command.consented) return fail(state, 'Voluntary tester consent is required.')
     if (!command.testerRole.trim() || command.testerRole === workOrder.ownerRole) return fail(state, 'An independent verifier is required.')
     if (!command.definedTestConditions.trim()) return fail(state, 'Defined test conditions are required.')
+    if (command.beforeOutcome && command.afterOutcome) {
+      if (![command.beforeOutcome.completionMinutes, command.afterOutcome.completionMinutes].every(value => Number.isFinite(value) && value >= 1 && value <= 1440)) return fail(state, 'Journey completion times must be between 1 and 1,440 minutes.')
+    }
   }
 
   const next = structuredClone(state)
@@ -94,6 +99,8 @@ export function transitionBarrier(state: DemoState, command: TransitionCommand):
       dataLabel: illustrativeDataLabel,
       decision: command.type === 'accept' ? 'accepted' : command.type === 'reject' ? 'rejected' : 'additional_inspection',
       definedTestConditions: command.definedTestConditions,
+      beforeOutcome: command.beforeOutcome,
+      afterOutcome: command.afterOutcome,
       feedback: eventReason,
       timestamp: command.timestamp,
     }

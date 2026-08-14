@@ -28,12 +28,11 @@ function verificationInput(state: DemoState, command: TransitionCommand): {
       journeyId: journey.id,
       accessRequirement: journey.accessRequirement,
       definedTestConditions: command.definedTestConditions,
+      beforeOutcome: command.beforeOutcome,
+      afterOutcome: command.afterOutcome,
       reason: command.reason,
     },
-    context: {
-      ownerRole: workOrder.ownerRole,
-      hasRepairEvidence: workOrder.repairEvidence.length > 0,
-    },
+    context: { ownerRole: workOrder.ownerRole, hasRepairEvidence: workOrder.repairEvidence.length > 0 },
   }
 }
 

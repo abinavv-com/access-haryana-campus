@@ -25,6 +25,8 @@ export interface VerificationInput {
   journeyId: string
   accessRequirement: string
   definedTestConditions: string
+  beforeOutcome?: { succeeded: boolean; completionMinutes: number }
+  afterOutcome?: { succeeded: boolean; completionMinutes: number }
   reason: string
 }
 
@@ -75,6 +77,8 @@ export function validateVerification(input: VerificationInput, trustedWorkOrder:
   if (!input.journeyId.trim()) errors.push('A defined journey is required.')
   if (!input.accessRequirement.trim()) errors.push('An access requirement is required.')
   if (!input.definedTestConditions.trim()) errors.push('Defined test conditions are required.')
+  if (input.beforeOutcome && (!Number.isFinite(input.beforeOutcome.completionMinutes) || input.beforeOutcome.completionMinutes < 1 || input.beforeOutcome.completionMinutes > 1440)) errors.push('Before completion time must be between 1 and 1,440 minutes.')
+  if (input.afterOutcome && (!Number.isFinite(input.afterOutcome.completionMinutes) || input.afterOutcome.completionMinutes < 1 || input.afterOutcome.completionMinutes > 1440)) errors.push('After completion time must be between 1 and 1,440 minutes.')
   if (input.decision === 'rejected' && !input.reason.trim()) errors.push('A rejection reason is required.')
   return errors
 }

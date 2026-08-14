@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type Dispatch, type KeyboardEvent, type ReactNode } from 'react'
 import type { DemoAction } from '../domain/demoReducer'
 import type { BarrierStatus, DemoState } from '../domain/types'
+import { fixtureIds } from '../data/demo-fixture.v1'
 import { LifecycleRail } from './LifecycleRail'
 
 export type SimulatedRole = 'auditor' | 'facilities' | 'verifier'
@@ -55,12 +56,20 @@ export function AppShell(props: Props) {
     }
   }
 
+  function handleNavClick(href: string, e: React.MouseEvent<HTMLAnchorElement>) {
+    if (href.startsWith('#')) return
+    e.preventDefault()
+    window.history.pushState({}, '', href)
+    window.dispatchEvent(new PopStateEvent('popstate'))
+    window.setTimeout(() => document.getElementById('main-content')?.focus(), 0)
+  }
+
   return <>
     <a className="skip-link" href="#main-content">Skip to main content</a>
     <div className="demo-banner" role="note">Demo mode — fictional records and illustrative images.</div>
     <header className="app-header">
       <div className="identity"><strong>Access Haryana Campus</strong><span>Haryana Ideathon 2026 demo</span></div>
-      <nav aria-label="Primary"><a href="/">Overview</a><a href="/audit">Guided audit</a><a href="/barriers">Barrier record</a><a href="/work-order">Work order</a><a href="/verification">Verification</a><a href="/impact">Impact report</a></nav>
+      <nav aria-label="Primary"><a href="/" onClick={(e) => handleNavClick('/', e)}>Overview</a><a href="/audit" onClick={(e) => handleNavClick('/audit', e)}>Guided audit</a><a href={`/barriers/${fixtureIds.primaryBarrier}`} onClick={(e) => handleNavClick(`/barriers/${fixtureIds.primaryBarrier}`, e)}>Barrier record</a><a href="/#barrier-records" onClick={(e) => handleNavClick('/#barrier-records', e)}>Work order</a><a href="/verification" onClick={(e) => handleNavClick('/verification', e)}>Verification</a><a href="/impact" onClick={(e) => handleNavClick('/impact', e)}>Impact report</a></nav>
       <div className="header-actions">
         <label>Simulated role<select aria-label="Simulated role" value={role} onChange={event => onRoleChange(event.target.value as SimulatedRole)}><option value="auditor">Auditor</option><option value="facilities">Facilities</option><option value="verifier">Verifier</option></select></label>
         <button type="button" aria-pressed={largeText} onClick={() => onLargeTextChange(!largeText)}>Increase text size</button>

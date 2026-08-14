@@ -60,12 +60,16 @@ test('records another inspection without advancing the awaiting-verification sta
 test('reports only accepted verified records with source links and a qualified print summary', async () => {
   const state = awaitingState()
   state.barriers[0].status = 'verified'
-  state.verifications.push({ id: 'verification-primary', barrierId: fixtureIds.primaryBarrier, workOrderId: 'work-order-primary', dataLabel: illustrativeDataLabel, decision: 'accepted', definedTestConditions: 'Dry daylight journey from main gate to admissions using a manual wheelchair.', feedback: 'Journey completed.', timestamp: '2026-08-15T10:00:00.000Z' })
+  state.verifications.push({ id: 'verification-primary', barrierId: fixtureIds.primaryBarrier, workOrderId: 'work-order-primary', dataLabel: illustrativeDataLabel, decision: 'accepted', definedTestConditions: 'Dry daylight journey from main gate to admissions using a manual wheelchair.', beforeOutcome: { succeeded: false, completionMinutes: 12 }, afterOutcome: { succeeded: true, completionMinutes: 7 }, feedback: 'Journey completed.', timestamp: '2026-08-15T10:00:00.000Z' })
   state.workOrders.push({ id: 'work-order-unverified', barrierId: fixtureIds.rampBarrier, dataLabel: illustrativeDataLabel, ownerRole: 'Estates', remedy: 'Review ramp', costBand: '₹25,000', dueDate: '2026-08-25', repairEvidence: [] })
   const print = vi.spyOn(window, 'print').mockImplementation(() => undefined)
   const user = userEvent.setup()
   render(<ImpactScreen state={state} navigate={() => undefined} />)
   expect(screen.getAllByText('1', { selector: '.metric-value' })).toHaveLength(2)
+  expect(screen.getByText('0%', { selector: '.metric-value' })).toBeInTheDocument()
+  expect(screen.getByText('100%', { selector: '.metric-value' })).toBeInTheDocument()
+  expect(screen.getByText('5 min', { selector: '.metric-value' })).toBeInTheDocument()
+  expect(screen.getByText('5 days', { selector: '.metric-value' })).toBeInTheDocument()
   expect(screen.getByRole('link', { name: /barrier-obstructed-landing/i })).toBeInTheDocument()
   expect(screen.getByRole('link', { name: /work-order-primary/i })).toBeInTheDocument()
   expect(screen.getByText(/verification-primary/i)).toBeInTheDocument()

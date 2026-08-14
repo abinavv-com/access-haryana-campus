@@ -44,6 +44,12 @@ const fixture: DemoState = {
       severity: 'high',
       status: 'observed',
       observedAt: '2026-08-10T09:30:00.000Z',
+      guidelineReference: {
+        source: 'Government of India — Accessibility Guidelines and Standards for Higher Education Institutions and Universities',
+        editionYear: 2024,
+        section: 'Demo reference: Section 6.2',
+        checkType: 'screening',
+      },
       evidence: [
         {
           id: 'evidence-obstructed-landing-before',
@@ -74,6 +80,12 @@ const fixture: DemoState = {
       severity: 'moderate',
       status: 'observed',
       observedAt: '2026-08-10T09:40:00.000Z',
+      guidelineReference: {
+        source: 'Government of India — Accessibility Guidelines and Standards for Higher Education Institutions and Universities',
+        editionYear: 2024,
+        section: 'Demo reference: Section 6.2',
+        checkType: 'screening',
+      },
       evidence: [
         {
           id: 'evidence-ramp-screening',
@@ -104,6 +116,12 @@ const fixture: DemoState = {
       severity: 'moderate',
       status: 'observed',
       observedAt: '2026-08-10T09:50:00.000Z',
+      guidelineReference: {
+        source: 'Government of India — Accessibility Guidelines and Standards for Higher Education Institutions and Universities',
+        editionYear: 2024,
+        section: 'Demo reference: Section 6.2',
+        checkType: 'screening',
+      },
       evidence: [
         {
           id: 'evidence-signage-missing',

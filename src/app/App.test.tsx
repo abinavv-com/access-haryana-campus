@@ -2,6 +2,8 @@ import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, test, vi } from 'vitest'
 import { App } from './App'
+import { DEMO_STORAGE_KEY, saveDemoState } from '../data/storage'
+import { createDemoFixture, fixtureIds } from '../data/demo-fixture.v1'
 
 describe('accessible application shell', () => {
   beforeEach(() => {
@@ -110,5 +112,36 @@ describe('accessible application shell', () => {
 
     getItem.mockRestore()
     setItem.mockRestore()
+  })
+
+  test('restores demo progress before first render and preserves it on refresh', () => {
+    const saved = createDemoFixture()
+    saved.barriers[0].status = 'validated'
+    saveDemoState(saved)
+    const first = render(<App />)
+    expect(screen.getAllByText(/validated/i).length).toBeGreaterThan(0)
+    first.unmount()
+    render(<App />)
+    expect(screen.getAllByText(/validated/i).length).toBeGreaterThan(0)
+    expect(JSON.parse(localStorage.getItem(DEMO_STORAGE_KEY)!).state.barriers[0].status).toBe('validated')
+  })
+
+  test('surfaces recoverable demo storage warnings without blocking the app', () => {
+    localStorage.setItem(DEMO_STORAGE_KEY, '{')
+    render(<App />)
+    expect(screen.getByText(/saved demo data could not be restored/i)).toHaveAttribute('role', 'status')
+    expect(screen.getByRole('main')).toBeInTheDocument()
+  })
+
+  test('primary navigation uses valid entity routes without reloading the document', async () => {
+    const user = userEvent.setup()
+    window.history.replaceState({}, '', '/')
+    render(<App />)
+    const nav = screen.getByRole('navigation', { name: /primary/i })
+    expect(within(nav).getByRole('link', { name: /barrier record/i })).toHaveAttribute('href', `/barriers/${fixtureIds.primaryBarrier}`)
+    expect(within(nav).getByRole('link', { name: /work order/i })).toHaveAttribute('href', '/#barrier-records')
+    await user.click(within(nav).getByRole('link', { name: /barrier record/i }))
+    expect(window.location.pathname).toBe(`/barriers/${fixtureIds.primaryBarrier}`)
+    expect(screen.getByRole('heading', { name: /landing narrowed/i })).toBeInTheDocument()
   })
 })

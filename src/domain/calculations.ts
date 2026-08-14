@@ -48,6 +48,8 @@ export interface ImpactRecord {
   verifiedMinutes: number
   repairDays: number
   spend: number
+  observedAt?: string
+  verifiedAt?: string
 }
 
 export interface ImpactResult {
@@ -89,4 +91,15 @@ export function calculateImpact(records: readonly ImpactRecord[]): ImpactResult 
       verificationIds: verified.map(({ verificationId }) => verificationId),
     },
   }
+}
+
+export function calculateAverageDaysFromObservation(records: readonly ImpactRecord[]): number | null {
+  const verified = records.filter((record) => record.status === 'verified')
+  const withTimestamps = verified.filter(r => r.observedAt && r.verifiedAt)
+  const daysFromObservation = withTimestamps.map(({ observedAt, verifiedAt }) => {
+    const start = new Date(observedAt!).getTime()
+    const end = new Date(verifiedAt!).getTime()
+    return Math.round((end - start) / (1000 * 60 * 60 * 24))
+  })
+  return withTimestamps.length ? round(daysFromObservation.reduce((sum, days) => sum + days, 0) / withTimestamps.length) : null
 }

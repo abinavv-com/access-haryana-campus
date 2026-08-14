@@ -50,6 +50,8 @@ describe('validateVerification', () => {
     journeyId: 'journey-1',
     accessRequirement: 'Step-free mobility access',
     definedTestConditions: 'Dry daylight conditions',
+    beforeOutcome: { succeeded: false, completionMinutes: 12 },
+    afterOutcome: { succeeded: true, completionMinutes: 7 },
     reason: '',
   }
   const trustedWorkOrder = { ownerRole: 'facilities', hasRepairEvidence: true }
@@ -64,6 +66,13 @@ describe('validateVerification', () => {
 
   it('requires a reason when verification is rejected', () => {
     expect(validateVerification({ ...valid, decision: 'rejected', reason: '  ' }, trustedWorkOrder)).toContain('A rejection reason is required.')
+  })
+
+  it('requires finite, bounded before and after journey completion times', () => {
+    expect(validateVerification({ ...valid, beforeOutcome: { succeeded: false, completionMinutes: 0 }, afterOutcome: { succeeded: true, completionMinutes: 1441 } }, trustedWorkOrder)).toEqual([
+      'Before completion time must be between 1 and 1,440 minutes.',
+      'After completion time must be between 1 and 1,440 minutes.',
+    ])
   })
 
   it('derives repair ownership from trusted work-order context and ignores a caller claim', () => {

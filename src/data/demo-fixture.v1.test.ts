@@ -80,6 +80,13 @@ describe('createDemoFixture', () => {
     expect(state.barriers.every(({ journeyId }) => journeyId === fixtureIds.primaryJourney)).toBe(true)
   })
 
+  it('seeds an exact bounded screening reference on every standards-related barrier', () => {
+    const references = createDemoFixture().barriers.map(({ guidelineReference }) => guidelineReference)
+    expect(references).toHaveLength(3)
+    expect(references.every((reference) => reference?.source === 'Government of India — Accessibility Guidelines and Standards for Higher Education Institutions and Universities')).toBe(true)
+    expect(references.every((reference) => reference?.editionYear === 2024 && reference.section === 'Demo reference: Section 6.2' && reference.checkType === 'screening')).toBe(true)
+  })
+
   it('labels every record as illustrative demo data', () => {
     const state = createDemoFixture()
     const records = [state.campus, ...state.journeys, ...state.barriers]

@@ -81,9 +81,12 @@ export interface Verification {
   dataLabel: IllustrativeDataLabel
   decision: 'accepted' | 'rejected' | 'additional_inspection'
   definedTestConditions: string
+  beforeOutcome?: JourneyOutcome
+  afterOutcome?: JourneyOutcome
   feedback?: string
   timestamp: string
 }
+export interface JourneyOutcome { succeeded: boolean; completionMinutes: number }
 
 export interface ActivityEvent {
   id: string
