@@ -183,6 +183,8 @@ button:active:not(:disabled),
 
 .app-layout main {
   min-width: 0;
+  /* Route changes focus <main>, which scrolls it into view behind the sticky header and perspective bar. */
+  scroll-margin-top: calc(var(--header-height) + 96px);
 }
 
 .app-layout main:focus-visible {

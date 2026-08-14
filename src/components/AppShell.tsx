@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, type Dispatch, type KeyboardEvent, type Re
 import type { DemoAction } from '../domain/demoReducer'
 import type { BarrierStatus, DemoState } from '../domain/types'
 import { fixtureIds } from '../data/demo-fixture.v1'
-import { LifecycleRail } from './LifecycleRail'
+import { LifecycleRail,statusIndex } from './LifecycleRail'
 
 export type SimulatedRole = 'auditor' | 'facilities' | 'verifier'
 
@@ -29,7 +29,9 @@ export function AppShell(props: Props) {
   const confirmRef = useRef<HTMLButtonElement>(null)
   const hasOpenedDialog = useRef(false)
   const routeBarrierId = window.location.pathname.match(/^\/(?:barriers|work-orders|verification)\/([^/]+)$/)?.[1]
-  const primaryStatus: BarrierStatus = state.barriers.find(barrier => barrier.id === routeBarrierId)?.status ?? state.barriers[0]?.status ?? 'observed'
+  // Off an entity route (overview, audit, impact) the rail follows the furthest-advanced case, not the first seeded one.
+  const furthest = state.barriers.reduce<BarrierStatus | undefined>((best, barrier) => best && statusIndex[best] >= statusIndex[barrier.status] ? best : barrier.status, undefined)
+  const primaryStatus: BarrierStatus = state.barriers.find(barrier => barrier.id === routeBarrierId)?.status ?? furthest ?? 'observed'
 
   useEffect(() => {
     if (confirming) {
