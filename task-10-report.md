@@ -21,6 +21,7 @@ All browser commands used `agent-browser` against `http://127.0.0.1:5173` from a
 - **Forced colours:** Chromium launched with `--force-high-contrast`; `matchMedia('(forced-colors: active)').matches` returned `true`. At 390px, three buttons remained present, current-stage text was `1ObservedAuditorCurrent`, and document overflow was false. Artifact: `verification/task-10/forced-colors-audit.png`.
 - **Missing-image fallback:** the audit evidence image URL was replaced with `/media/deliberately-missing-task10.jpg`. Evaluation returned `fallback: "Illustrative evidence unavailable"`, preserved the descriptive `aria-label`, and reported `imageCount: 0`. Artifact: `verification/task-10/missing-image-fallback.png`.
 - **Print:** `agent-browser pdf verification/task-10/impact-print.pdf` generated the final PDF. It was reopened in Chromium's PDF viewer and visually inspected at original detail. The viewer reports `1 / 1`; heading, three metrics, traceability content, and disclaimer are visible without clipping. Artifacts: `verification/task-10/impact-print.pdf` and `verification/task-10/impact-print-preview.png`.
+- **Large text and reduced motion:** at 390px, the in-app text-size control raised the root font from 16px to 19px and settled at `clientWidth: 390`, `scrollWidth: 390`, `overflow: false`. The reduced-motion control changed the screen-entry animation from `stage-in` to `none`. Artifact: `verification/task-10/large-text-reduced-motion-390.png`.
 
 Representative commands (all exited 0):
 
@@ -37,8 +38,8 @@ agent-browser --session printsource pdf verification/task-10/impact-print.pdf
 
 Recorded immediately before commit:
 
-- `npm test` — exit 0; 11 test files and 73 tests passed.
-- `npm run build` — exit 0; TypeScript and Vite production build completed, 39 modules transformed.
+- `npm test` — exit 0; 11 test files and 80 tests passed.
+- `npm run build` — exit 0; TypeScript and Vite production build completed, 40 modules transformed.
 - `git diff --check` — exit 0.
 
 ## Scope and remaining concerns

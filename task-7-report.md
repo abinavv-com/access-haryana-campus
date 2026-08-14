@@ -23,6 +23,12 @@
 - Validation moves focus to the error summary, controls are natively keyboard operable, and status is communicated in text.
 - Scope is limited to Overview and Guided Audit; the post-submit URL is prepared for Task 8 without implementing that screen.
 
-## Concern
+## Post-plan update (2026-08-14)
 
-- The fixture has no seeded recent work orders, so the overview truthfully omits a populated recent-work-order list rather than fabricating one. Task 8 can make that section meaningful once work orders exist.
+- Navigation now uses real entity routes throughout the primary journey, and the lifecycle rail follows the furthest-advanced case away from an entity route.
+- App state is saved after every reducer change, so a refresh preserves the created audit and current presenter stage.
+- The Superdesign visual pass and current screenshots supersede the original task-level appearance.
+
+## Resolved original concern
+
+- The fixture still begins without a fabricated recent work order; the section becomes meaningful only after the presenter creates one through the Task 8 flow.

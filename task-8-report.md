@@ -20,6 +20,12 @@
 - Reviewer identity is explicit in the immutable validation event reason while retaining the existing broad `facilities` perspective type.
 - No independent-verification or impact-report behavior from Task 9 is included.
 
-## Concern
+## Post-plan update (2026-08-14)
 
-- The current domain schema has no dedicated reviewer-role, priority-assessment or hazard-record entity. Task 8 therefore retains these details in immutable activity reasons without widening the shared schema late in the workflow.
+- The assigned work order preserves the user's controlled owner, remedy, cost band and due date through the repair-evidence transition.
+- Every barrier now displays the standards/guideline provenance that informed its screening check.
+- The visual pass keeps lifecycle state textual and moves narrow status pills to their own row, preventing mid-word breaks.
+
+## Remaining schema constraint
+
+- The current domain schema has no dedicated reviewer-role, priority-assessment or hazard-record entity. These details remain in immutable activity reasons; this is an explicit prototype boundary, not missing display content.

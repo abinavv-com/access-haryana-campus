@@ -6,7 +6,7 @@ import type { DemoAction } from '../domain/demoReducer'
 import type { DemoState } from '../domain/types'
 import { validateVerification } from '../domain/validation'
 
-export function VerificationScreen({ state, dispatch, barrierId, navigate }: { state: DemoState; dispatch: Dispatch<DemoAction>; barrierId: string; navigate: (path: string) => void }) {
+export function VerificationScreen({ state, dispatch, barrierId, navigate, now = () => new Date().toISOString() }: { state: DemoState; dispatch: Dispatch<DemoAction>; barrierId: string; navigate: (path: string) => void; now?: () => string }) {
   const barrier = state.barriers.find(item => item.id === barrierId)
   const journey = barrier && state.journeys.find(item => item.id === barrier.journeyId)
   const workOrder = state.workOrders.find(item => item.barrierId === barrierId)
@@ -27,7 +27,7 @@ export function VerificationScreen({ state, dispatch, barrierId, navigate }: { s
     if (nextErrors.length) return
     const type = decision === 'accepted' ? 'accept' : decision === 'rejected' ? 'reject' : 'request_inspection'
     const eventReason = decision === 'accepted' ? `Accepted only for this defined journey and test conditions. ${reason}` : decision === 'rejected' ? reason : `Another independent inspection requested. ${reason}`
-    dispatch({ type: 'APPLY_TRANSITION', command: { type, barrierId, eventId: `event-${type}-${state.verifications.length + 1}`, verificationId: `verification-${state.verifications.length + 1}`, timestamp: '2026-08-15T10:00:00.000Z', actorPerspective: 'verifier', reason: eventReason, consented, testerRole, definedTestConditions: conditions, beforeOutcome, afterOutcome } })
+    dispatch({ type: 'APPLY_TRANSITION', command: { type, barrierId, eventId: `event-${type}-${state.verifications.length + 1}`, verificationId: `verification-${state.verifications.length + 1}`, timestamp: now(), actorPerspective: 'verifier', reason: eventReason, consented, testerRole, definedTestConditions: conditions, beforeOutcome, afterOutcome } })
   }
 
   const events = state.activity.filter(item => item.barrierId === barrierId)

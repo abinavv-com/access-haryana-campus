@@ -2,6 +2,8 @@ import { useReducer } from 'react'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { expect, test, vi } from 'vitest'
+import { readFileSync } from 'node:fs'
+import { resolve } from 'node:path'
 import { createDemoFixture, fixtureIds } from '../data/demo-fixture.v1'
 import { demoReducer } from '../domain/demoReducer'
 import { illustrativeDataLabel, type DemoState } from '../domain/types'
@@ -55,6 +57,26 @@ test('records another inspection without advancing the awaiting-verification sta
   await user.click(screen.getByRole('button', { name: /request another inspection/i }))
   expect(screen.getAllByText(/awaiting verification/i).length).toBeGreaterThan(0)
   expect(screen.getByText(/another independent inspection requested/i)).toBeInTheDocument()
+})
+
+test('records the actual verification time through an injectable clock', async () => {
+  const user = userEvent.setup()
+  const dispatch = vi.fn()
+  render(<VerificationScreen state={awaitingState()} dispatch={dispatch} barrierId={fixtureIds.primaryBarrier} navigate={() => undefined} now={() => '2026-08-16T14:30:00.000Z'} />)
+  await user.click(screen.getByLabelText(/i freely consent/i))
+  await user.click(screen.getByRole('button', { name: /accept for this journey and test conditions/i }))
+  expect(dispatch).toHaveBeenCalledWith(expect.objectContaining({
+    command: expect.objectContaining({ timestamp: '2026-08-16T14:30:00.000Z' }),
+  }))
+})
+
+test('loads print rules after shared component rules without cascade overrides', () => {
+  const main = readFileSync(resolve('src/main.tsx'), 'utf8')
+  const impact = readFileSync(resolve('src/screens/ImpactScreen.tsx'), 'utf8')
+  const print = readFileSync(resolve('src/styles/print.css'), 'utf8')
+  expect(main.indexOf("./styles/print.css")).toBeGreaterThan(main.indexOf("./styles/components.css"))
+  expect(impact).not.toContain("../styles/print.css")
+  expect(print).not.toContain('!important')
 })
 
 test('reports only accepted verified records with source links and a qualified print summary', async () => {

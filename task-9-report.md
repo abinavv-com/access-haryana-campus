@@ -21,3 +21,10 @@
 - Verified that acceptance wording does not imply universal usability, certification or legal compliance.
 - Verified that print CSS removes application chrome and keeps the evidence summary within an A4-oriented layout.
 - No backend, personal diagnosis, authentication or statutory determination was introduced.
+
+## Post-plan update (2026-08-14)
+
+- The verifier records before/after journey completion and times; impact metrics skip any record without those measurements.
+- Verification uses the actual action time through an injectable clock, keeping the live elapsed-days metric honest while tests remain deterministic.
+- Cost-band parsing supports currency symbols on both bounds, so the illustrative pilot spend is derived as the midpoint rather than silently reading zero.
+- Print rules load last through the application entry point and use normal cascade order without `!important`. The regenerated PDF remains one A4 page.

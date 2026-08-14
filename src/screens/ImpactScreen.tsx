@@ -1,8 +1,6 @@
 import { MetricCard } from '../components/MetricCard'
 import { calculateImpact, calculateAverageDaysFromObservation, type ImpactRecord } from '../domain/calculations'
 import type { DemoState } from '../domain/types'
-import '../styles/print.css'
-
 function extractSpend(costBand: string): number {
   // Cost bands are free text ('₹10,000–₹25,000 (illustrative)'); take the midpoint of the first two figures.
   const figures = costBand.replaceAll(',', '').match(/\d+/g)?.map(Number) ?? []
