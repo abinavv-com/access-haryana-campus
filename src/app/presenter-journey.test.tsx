@@ -48,4 +48,7 @@ test('a presenter completes the fictional audit-to-impact journey through visibl
   expect(screen.getByText('evidence-repair-after')).toBeInTheDocument()
   expect(screen.getByText('verification-1')).toBeInTheDocument()
   expect(screen.getByText('event-accept-1')).toBeInTheDocument()
+
+  const persisted = JSON.parse(localStorage.getItem('access-haryana-campus.demo')!)
+  expect(persisted.state.barriers.some((item: { status: string }) => item.status === 'verified')).toBe(true)
 })

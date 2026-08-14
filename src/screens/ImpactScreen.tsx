@@ -4,11 +4,10 @@ import type { DemoState } from '../domain/types'
 import '../styles/print.css'
 
 function extractSpend(costBand: string): number {
-  const match = costBand.match(/(\d+),?(\d{3})?[–-](\d+),?(\d{3})?/)
-  if (!match) return 0
-  const min = Number(match[1] + (match[2] ?? '')) || 0
-  const max = Number(match[3] + (match[4] ?? '')) || 0
-  return (min + max) / 2
+  // Cost bands are free text ('₹10,000–₹25,000 (illustrative)'); take the midpoint of the first two figures.
+  const figures = costBand.replaceAll(',', '').match(/\d+/g)?.map(Number) ?? []
+  if (!figures.length) return 0
+  return (figures[0] + (figures[1] ?? figures[0])) / 2
 }
 
 function buildImpactRecords(state: DemoState): ImpactRecord[] {

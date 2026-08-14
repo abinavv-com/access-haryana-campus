@@ -1,1 +1,126 @@
-@media print{.demo-banner,.app-header,.perspective,.lifecycle,.no-print{display:none!important}.app-layout{display:block;padding:0}.impact-report{display:block;color:#000;font-size:7pt;line-height:1.15}.impact-report.screen-stack{gap:3pt}.impact-report h1{font-size:19pt;margin:4pt 0}.impact-report h2,.impact-report h3,.impact-report p{margin:2pt 0}.impact-report>section{break-inside:avoid;border-color:#000;box-shadow:none;margin:0;padding:5pt}.metric-grid{display:grid!important;grid-template-columns:repeat(3,1fr);gap:3pt}.metric-card{padding:4pt}.metric-value{font-size:16pt}.trace-record{gap:4pt;margin-top:3pt;padding:4pt}.trace-record dl div{padding:1pt 0}.print-disclaimer{border-top:2px solid #000;padding:3pt;font-size:7pt}@page{size:A4;margin:8mm}}
+/* Access Haryana Campus — print
+   The impact report must render on exactly one A4 page: heading, metrics,
+   traceability records and the disclaimer all legible and unclipped.
+
+   This stylesheet is imported by ImpactScreen after the shared component
+   sheet, but Vite's module evaluation order does not guarantee it wins the
+   cascade on equal specificity. Every rule below is !important so it holds
+   regardless of load order. */
+
+@media print {
+  .demo-banner,
+  .app-header,
+  .perspective,
+  .lifecycle,
+  .no-print,
+  .skip-link {
+    display: none !important;
+  }
+
+  html,
+  body {
+    background: #fff !important;
+  }
+
+  .app-layout {
+    display: block !important;
+    padding: 0 !important;
+    grid-template-columns: none !important;
+  }
+
+  .impact-report {
+    display: block !important;
+    color: #000 !important;
+    font-size: 7pt !important;
+    line-height: 1.15 !important;
+  }
+
+  .impact-report.screen-stack {
+    display: block !important;
+    gap: 0 !important;
+  }
+
+  .impact-report h1 {
+    font-size: 19pt !important;
+    margin: 4pt 0 !important;
+    letter-spacing: normal !important;
+  }
+
+  .impact-report h2,
+  .impact-report h3 {
+    font-size: 9pt !important;
+    margin: 2pt 0 !important;
+  }
+
+  .impact-report p {
+    margin: 2pt 0 !important;
+    max-width: none !important;
+  }
+
+  .impact-report .eyebrow {
+    font-size: 6pt !important;
+  }
+
+  .impact-report > section {
+    break-inside: avoid !important;
+    background: #fff !important;
+    border: 1px solid #000 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    margin: 0 0 4pt !important;
+    padding: 5pt !important;
+  }
+
+  .metric-grid {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 3pt !important;
+  }
+
+  .metric-card {
+    padding: 4pt !important;
+    border-radius: 0 !important;
+  }
+
+  .metric-value {
+    font-size: 16pt !important;
+    margin: 1pt 0 !important;
+  }
+
+  .metric-card p,
+  .metric-card small {
+    margin: 1pt 0 !important;
+    font-size: 6pt !important;
+  }
+
+  .trace-record {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 4pt !important;
+    margin: 3pt 0 0 !important;
+    padding: 4pt !important;
+    background: #fff !important;
+    border: 1px solid #000 !important;
+    border-radius: 0 !important;
+  }
+
+  .trace-record dl div {
+    padding: 1pt 0 !important;
+    gap: 4pt !important;
+    grid-template-columns: 5rem 1fr !important;
+  }
+
+  .print-disclaimer {
+    background: #fff !important;
+    border: none !important;
+    border-top: 2px solid #000 !important;
+    border-radius: 0 !important;
+    padding: 3pt 0 0 !important;
+    font-size: 7pt !important;
+  }
+
+  @page {
+    size: A4;
+    margin: 8mm;
+  }
+}

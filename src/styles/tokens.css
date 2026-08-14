@@ -1,1 +1,99 @@
-:root{--canvas:#f3f1ea;--ink:#101820;--surface:#fff;--muted:#e8e5dc;--accent:#d85a1a;--accent-hover:#b94710;--focus:#1261a0;--verified:#176b45;--danger:#b42318;--border:rgba(16,24,32,.2);--radius:6px;--space-3:1.5rem;--space-4:2rem}html[data-text-size=large]{font-size:118.75%}html[data-high-contrast=true]{--canvas:#fff;--ink:#000;--muted:#fff;--border:#000}
+/* Access Haryana Campus — design tokens
+   Source of truth: .superdesign/design-system.md */
+:root {
+  /* Colour roles */
+  --canvas: #f3f1ea;
+  --ink: #101820;
+  --surface: #ffffff;
+  --muted: #e8e5dc;
+  --accent: #d85a1a;
+  --accent-hover: #b94710;
+  --focus: #1261a0;
+  --verified: #176b45;
+  --warning: #9a6700;
+  --danger: #b42318;
+  --info: #1261a0;
+
+  /* Ink at opacity, used for borders, dividers and secondary text */
+  --ink-05: rgba(16, 24, 32, 0.05);
+  --ink-10: rgba(16, 24, 32, 0.1);
+  --ink-15: rgba(16, 24, 32, 0.15);
+  --ink-30: rgba(16, 24, 32, 0.3);
+  --ink-60: rgba(16, 24, 32, 0.6);
+  --border: var(--ink-15);
+  --border-strong: var(--ink);
+
+  /* Surfaces tinted by status, kept low-saturation so text/icon still carries meaning */
+  --verified-tint: #e7f1eb;
+  --warning-tint: #f6efe0;
+  --danger-tint: #fbe9e7;
+  --info-tint: #e7eff7;
+  --accent-tint: #fbe9de;
+
+  /* Spacing scale (existing --space-3 / --space-4 kept stable for callers) */
+  --space-0: 0.25rem;
+  --space-1: 0.5rem;
+  --space-2: 0.75rem;
+  --space-3: 1.5rem;
+  --space-4: 2rem;
+  --space-5: 2.5rem;
+  --space-6: 3rem;
+  --space-7: 4rem;
+
+  /* Radii — 4-10px per spec */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 10px;
+  --radius: var(--radius-md);
+
+  /* Elevation is minimal and functional, never decorative */
+  --shadow-sm: 0 1px 2px rgba(16, 24, 32, 0.08);
+  --shadow-md: 0 4px 12px rgba(16, 24, 32, 0.1);
+
+  /* Type scale, matching documented px sizes */
+  --text-display: clamp(2.25rem, 4vw + 1rem, 4rem); /* 36-64px */
+  --text-heading: clamp(1.5rem, 1.5vw + 1rem, 2rem); /* 24-32px */
+  --text-subheading: 1.125rem; /* 18px */
+  --text-body: 1rem; /* 16px */
+  --text-body-lg: 1.125rem; /* 18px */
+  --text-meta: 0.8125rem; /* 13px */
+  --text-meta-lg: 0.875rem; /* 14px */
+
+  /* Motion — restrained, 140-220ms, opacity/translate only */
+  --motion-fast: 140ms;
+  --motion-base: 200ms;
+  --motion-ease: cubic-bezier(0.2, 0, 0, 1);
+
+  /* Layout metrics */
+  --header-height: 72px;
+  --rail-width: 280px;
+  --content-max: 1040px;
+
+  font-variant-numeric: tabular-nums;
+}
+
+/* Accessibility preference overrides — persisted separately from demo-case reset */
+html[data-text-size="large"] {
+  font-size: 118.75%;
+}
+
+html[data-high-contrast="true"] {
+  --canvas: #ffffff;
+  --ink: #000000;
+  --surface: #ffffff;
+  --muted: #ffffff;
+  --border: #000000;
+  --border-strong: #000000;
+  --accent: #a6390d;
+  --accent-hover: #7a2909;
+  --focus: #0b4a80;
+  --verified: #0f4a30;
+  --warning: #6b4a00;
+  --danger: #7e1810;
+  --info: #0b4a80;
+  --verified-tint: #ffffff;
+  --warning-tint: #ffffff;
+  --danger-tint: #ffffff;
+  --info-tint: #ffffff;
+  --accent-tint: #ffffff;
+}
