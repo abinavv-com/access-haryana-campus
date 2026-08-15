@@ -13,77 +13,107 @@
   letter-spacing: 0.01em;
 }
 
-/* ---------- App shell: header ---------- */
+/* ---------- App shell: editorial masthead ---------- */
 
-.app-header {
-  min-height: var(--header-height);
-  position: sticky;
-  top: 0;
-  z-index: 10;
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  padding: var(--space-2) var(--space-3);
-  background: var(--surface);
-  border-bottom: 1px solid var(--border);
+.app-masthead {
+  display: grid;
+  grid-template-columns: minmax(16rem, 0.75fr) minmax(0, 1.5fr);
+  gap: var(--space-3) var(--space-5);
+  padding: clamp(1.25rem, 3vw, 2.5rem) clamp(1rem, 4vw, 4rem) 0;
+  background: var(--paper-raised);
+  border-bottom: 1px solid var(--rule);
+}
+
+.masthead-title {
+  align-self: start;
+  min-width: 0;
 }
 
 .identity {
   display: flex;
-  flex-direction: column;
-  min-width: 210px;
-  line-height: 1.25;
+  align-items: baseline;
+  gap: var(--space-2);
+  padding-bottom: var(--space-1);
+  border-bottom: 3px solid var(--ink);
+  line-height: 1.15;
 }
 
 .identity strong {
-  font-size: var(--text-body-lg);
-  font-weight: 700;
+  font-family: var(--font-display);
+  font-size: clamp(1.45rem, 2.2vw, 2.15rem);
 }
 
 .identity span {
+  margin-left: auto;
+  color: var(--ink-muted);
   font-size: var(--text-meta);
-  color: var(--ink-60);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
 }
 
-.app-header nav {
+.masthead-qualification {
+  margin: var(--space-2) 0 0;
+  color: var(--ink-muted);
+  font-family: var(--font-display);
+  font-size: var(--text-body-lg);
+  line-height: 1.35;
+}
+
+.route-index {
+  grid-column: 1 / -1;
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-0) var(--space-3);
-  flex: 1;
+  align-items: stretch;
+  border-top: 1px solid var(--rule);
 }
 
-.app-header nav a {
+.route-index a {
   display: inline-flex;
   align-items: center;
-  padding: var(--space-1) 0;
-  font-weight: 700;
+  min-height: 48px;
+  padding: var(--space-1) var(--space-3);
+  border-right: 1px solid var(--rule);
+  color: var(--ink-muted);
   font-size: var(--text-meta-lg);
-  text-decoration-thickness: 2px;
-  text-underline-offset: 4px;
-  color: var(--ink);
+  font-weight: 700;
+  text-decoration: none !important;
 }
 
-.header-actions {
+.route-index a:first-child {
+  padding-left: 0;
+}
+
+.route-index a[aria-current="page"] {
+  color: var(--accent-ink);
+  box-shadow: inset 0 -4px 0 var(--accent);
+}
+
+.utility-cluster {
   display: flex;
   align-items: end;
-  gap: var(--space-2);
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-2);
+  min-width: 0;
 }
 
-.header-actions label:not(.check-control) {
+.utility-cluster > label:not(.check-control) {
   display: flex;
   flex-direction: column;
   gap: 0.2rem;
+  color: var(--ink-muted);
   font-size: var(--text-meta);
   font-weight: 700;
 }
 
-.header-actions select {
+.utility-cluster select {
   min-width: 120px;
-  background: var(--surface);
+  padding: 0.4rem 0.5rem;
+  background: var(--paper-raised);
   color: var(--ink);
   border: 1px solid var(--ink);
-  border-radius: var(--radius-sm);
-  padding: 0.4rem 0.5rem;
+  border-radius: var(--radius-control);
 }
 
 .check-control {
@@ -94,7 +124,7 @@
   font-weight: 600;
 }
 
-.header-actions .check-control {
+.utility-cluster .check-control {
   white-space: nowrap;
 }
 
@@ -110,7 +140,7 @@ button {
   min-height: 44px;
   padding: 0.65rem 1.1rem;
   border: 1px solid var(--ink);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-control);
   cursor: pointer;
   font-weight: 700;
   font-size: var(--text-meta-lg);
@@ -154,9 +184,9 @@ button:active:not(:disabled),
   display: flex;
   align-items: center;
   gap: var(--space-3);
-  padding: var(--space-2) var(--space-3);
-  background: var(--muted);
-  border-bottom: 1px solid var(--border);
+  padding: var(--space-2) clamp(1rem, 4vw, 4rem);
+  background: var(--paper);
+  border-bottom: 1px solid var(--rule);
   font-size: var(--text-meta-lg);
 }
 
@@ -166,7 +196,7 @@ button:active:not(:disabled),
 
 .perspective small {
   margin-left: auto;
-  color: var(--ink-60);
+  color: var(--ink-muted);
   max-width: 32ch;
   text-align: right;
 }
@@ -174,33 +204,31 @@ button:active:not(:disabled),
 /* ---------- App layout ---------- */
 
 .app-layout {
-  display: grid;
-  grid-template-columns: var(--rail-width) minmax(0, var(--content-max));
-  gap: var(--space-4);
-  padding: var(--space-4);
-  align-items: start;
+  width: min(calc(100% - clamp(2rem, 8vw, 8rem)), 1180px);
+  margin-inline: auto;
+  padding: clamp(1.5rem, 4vw, 4rem) 0 var(--space-7);
 }
 
 .app-layout main {
   min-width: 0;
-  /* Route changes focus <main>, which scrolls it into view behind the sticky header and perspective bar. */
-  scroll-margin-top: calc(var(--header-height) + 96px);
-}
-
-.app-layout main:focus-visible {
-  outline: none;
+  scroll-margin-top: var(--space-3);
 }
 
 /* ---------- Evidence lifecycle rail — the signature device ---------- */
 
-.lifecycle {
-  align-self: start;
-  position: sticky;
-  top: calc(var(--header-height) + 82px);
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: var(--space-3);
+.case-progress {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(9rem, 0.22fr) minmax(0, 1fr);
+  gap: var(--space-4);
+  padding: var(--space-3) clamp(1rem, 4vw, 4rem);
+  background: var(--ink);
+  color: var(--paper-raised);
+  border-bottom: 4px solid var(--accent);
+}
+
+.case-progress__heading {
+  align-self: center;
 }
 
 .eyebrow {
@@ -212,141 +240,151 @@ button:active:not(:disabled),
   color: var(--ink-60);
 }
 
-.lifecycle h2 {
-  margin: 0.25rem 0 1rem;
-  font-size: 1.25rem;
+.case-progress .eyebrow {
+  color: var(--paper);
 }
 
-.lifecycle ol {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  counter-reset: stage;
+.case-progress h2 {
+  margin: 0.2rem 0 0;
+  color: var(--paper-raised);
+  font-size: 1.35rem;
 }
 
-.lifecycle li {
-  position: relative;
-  border-left: 2px solid var(--border);
-  padding: 0 0 var(--space-3) var(--space-3);
-}
-
-.lifecycle li:last-child {
-  padding-bottom: 0;
-}
-
-.lifecycle a {
-  display: grid;
-  grid-template-columns: 34px 1fr;
-  align-items: center;
-  gap: var(--space-2);
-  min-height: 58px;
-  padding: var(--space-1);
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  text-decoration: none;
-  transition: border-color var(--motion-base) var(--motion-ease),
-    background var(--motion-base) var(--motion-ease);
+.case-progress__track {
   min-width: 0;
 }
 
-.lifecycle a > span:nth-child(2) {
+.case-progress ol {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.case-progress li {
+  position: relative;
+  min-width: 0;
+  border-top: 2px solid var(--ink-muted);
+  padding: var(--space-2) var(--space-1) 0 0;
+}
+
+.case-progress li::before {
+  content: "";
+  position: absolute;
+  top: -5px;
+  left: 0;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--ink-muted);
+}
+
+.case-progress a {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-content: start;
+  gap: var(--space-1);
+  min-height: 7.75rem;
+  padding: var(--space-1) var(--space-1) var(--space-2) 0;
+  color: var(--paper-raised);
+  text-decoration: none;
+  min-width: 0;
+}
+
+.case-progress a > span:nth-child(2) {
   min-width: 0;
 }
 
 /* Remove underlines from rail links, provide weight/border for affordance instead */
-.lifecycle a:not(.button-primary):not(.button-secondary) {
+.case-progress a:not(.button-primary):not(.button-secondary) {
   text-decoration-line: none;
 }
 
-.lifecycle a strong,
-.lifecycle a small {
+.case-progress a strong,
+.case-progress a small {
   text-decoration-line: none;
 }
 
 .stage-number {
-  display: grid;
-  place-items: center;
-  width: 32px;
-  height: 32px;
-  background: var(--surface);
-  color: var(--ink);
-  border: 2px solid var(--ink-30);
-  border-radius: var(--radius-sm);
+  color: var(--paper);
+  font-family: var(--font-display);
+  font-size: 1.1rem;
   font-weight: 700;
   font-variant-numeric: tabular-nums;
 }
 
-.lifecycle small {
+.case-progress small {
   display: block;
-  color: var(--ink-60);
+  margin-top: 0.2rem;
+  color: var(--rule);
 }
 
 /* Upcoming: default quiet state, already the base styling above. */
-.lifecycle li[data-state="upcoming"] a strong {
+.case-progress li[data-state="upcoming"] a strong {
   font-weight: 600;
-  color: var(--ink-60);
+  color: var(--rule);
 }
 
 /* Complete: filled square marker + check glyph, border tint, no reliance on colour alone. */
-.lifecycle li[data-state="complete"] {
-  border-left-color: var(--verified);
+.case-progress li[data-state="complete"] {
+  border-top-color: var(--paper-raised);
 }
 
-.lifecycle li[data-state="complete"] a {
-  border-color: var(--verified);
-  background: var(--verified-tint);
+.case-progress li[data-state="complete"]::before {
+  background: var(--paper-raised);
 }
 
-.lifecycle li[data-state="complete"] .stage-number {
-  background: var(--verified);
-  border-color: var(--verified);
-  color: #fff;
-}
-
-.lifecycle li[data-state="complete"] .stage-number::after {
-  content: "\2713";
+.case-progress li[data-state="complete"] .stage-number::after {
+  content: " ✓";
 }
 
 /* Current: thick ink border + bold weight, distinct square treatment from complete. */
-.lifecycle li[data-state="current"] {
-  border-left-color: var(--ink);
+.case-progress li[data-state="current"] {
+  border-top-color: var(--accent);
 }
 
-.lifecycle li[data-state="current"] a {
-  border: 2px solid var(--ink);
-  background: var(--surface);
-  box-shadow: var(--shadow-sm);
+.case-progress li[data-state="current"]::before {
+  top: -7px;
+  width: 12px;
+  height: 12px;
+  background: var(--accent);
 }
 
-.lifecycle li[data-state="current"] .stage-number {
-  background: var(--ink);
-  border-color: var(--ink);
-  color: #fff;
+.case-progress li[data-state="current"] .stage-number {
+  color: #f2a487;
 }
 
-.lifecycle li[data-state="current"] a strong {
+.case-progress li[data-state="current"] a strong {
+  color: var(--paper-raised);
   font-weight: 700;
 }
 
 /* Rework: "Action required" tag sits under the Assigned stage, distinct shape (triangular flag glyph) */
-.lifecycle li > .status-badge--danger {
+.case-progress li > .status-badge--danger {
   display: flex;
   align-items: center;
   gap: 0.3rem;
   width: fit-content;
   margin-top: var(--space-1);
+  color: #ffc0ad;
 }
 
-.lifecycle li > .status-badge--danger::before {
+.case-progress li > .status-badge--danger::before {
   content: "\26A0";
 }
 
 /* Status badges within rail rows */
 /* Badge sits on its own row under the stage name so the 280px rail never breaks words. */
-.lifecycle .status-badge {
+.case-progress .status-badge {
   grid-column: 2;
   justify-self: start;
+  color: var(--paper-raised);
+  background: transparent;
+}
+
+.case-progress__cue {
+  display: none;
 }
 
 /* ---------- Status badges (state must never be colour alone: each tone carries a glyph) ---------- */
@@ -866,12 +904,26 @@ fieldset label {
 /* ---------- Narrow viewport: rail becomes a horizontal stage navigator, single column ---------- */
 
 @media (max-width: 900px) {
-  .app-header {
-    position: static;
+  .app-masthead {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-2) 0;
   }
 
-  .app-header,
-  .header-actions,
+  .utility-cluster {
+    justify-content: flex-start;
+  }
+
+  .route-index a {
+    flex: 1 1 auto;
+    justify-content: center;
+    padding-inline: var(--space-2);
+  }
+
+  .route-index a:first-child {
+    padding-left: var(--space-2);
+  }
+
   .perspective {
     align-items: stretch;
     flex-wrap: wrap;
@@ -884,31 +936,46 @@ fieldset label {
   }
 
   .app-layout {
-    display: block;
-    padding: var(--space-2);
+    width: min(calc(100% - 2rem), 1180px);
+    padding: var(--space-3) 0 var(--space-6);
   }
 
-  .lifecycle {
-    position: static;
+  .case-progress {
+    display: block;
     overflow-x: auto;
+    padding: var(--space-3) var(--space-2) var(--space-2);
+    scrollbar-color: var(--accent) var(--ink-muted);
+  }
+
+  .case-progress__heading {
+    position: sticky;
+    left: 0;
+    width: fit-content;
     margin-bottom: var(--space-3);
   }
 
-  .lifecycle ol {
-    display: flex;
-    min-width: 960px;
+  .case-progress__track {
+    width: max-content;
   }
 
-  .lifecycle li {
-    flex: 1;
-    border-left: 0;
-    border-top: 2px solid var(--border);
-    padding: var(--space-2) 0.35rem 0 0;
+  .case-progress ol {
+    grid-template-columns: repeat(6, minmax(9rem, 1fr));
+    min-width: 60rem;
   }
 
-  .lifecycle li[data-state="complete"],
-  .lifecycle li[data-state="current"] {
-    border-top-color: currentColor;
+  .case-progress__cue {
+    position: sticky;
+    left: calc(100% - 7.5rem);
+    display: block;
+    width: max-content;
+    margin-top: var(--space-1);
+    padding: var(--space-0) var(--space-1);
+    color: var(--paper-raised);
+    background: var(--ink);
+    border: 1px solid var(--accent);
+    border-radius: var(--radius-control);
+    font-size: var(--text-meta);
+    font-weight: 700;
   }
 
   .overview-grid {

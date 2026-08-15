@@ -37,7 +37,7 @@ describe('accessible application shell', () => {
     expect(screen.getByRole('link', { name: /skip to main content/i })).toHaveAttribute('href', '#main-content')
     expect(screen.getByRole('banner')).toBeInTheDocument()
     expect(screen.getByRole('navigation', { name: /primary/i })).toBeInTheDocument()
-    expect(screen.getByRole('navigation', { name: /demo journey/i })).toBeInTheDocument()
+    expect(screen.getByRole('navigation', { name: /case progress/i })).toBeInTheDocument()
     expect(screen.getByRole('main')).toHaveAttribute('id', 'main-content')
   })
 
@@ -62,7 +62,7 @@ describe('accessible application shell', () => {
 
   test('marks one lifecycle step current and communicates every state with text', () => {
     render(<App />)
-    const rail = screen.getByRole('navigation', { name: /demo journey/i })
+    const rail = screen.getByRole('navigation', { name: /case progress/i })
     const current = within(rail).getByRole('link', { name: /observed/i })
 
     expect(current).toHaveAttribute('aria-current', 'step')
@@ -181,5 +181,16 @@ describe('accessible application shell', () => {
     await user.click(within(nav).getByRole('link', { name: /barrier record/i }))
     expect(window.location.pathname).toBe(`/barriers/${fixtureIds.primaryBarrier}`)
     expect(screen.getByRole('heading', { name: /landing narrowed/i })).toBeInTheDocument()
+  })
+
+  test('identifies the current route and presents the complete numbered case progress', () => {
+    window.history.replaceState({}, '', '/audit')
+    render(<App />)
+
+    expect(screen.getByRole('link', { name: /guided audit/i })).toHaveAttribute('aria-current', 'page')
+    const progress = screen.getByRole('navigation', { name: /case progress/i })
+    expect(within(progress).getAllByRole('listitem')).toHaveLength(6)
+    expect(within(progress).getByText('01')).toBeVisible()
+    expect(within(progress).getByText('06')).toBeVisible()
   })
 })
