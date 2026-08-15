@@ -177,7 +177,7 @@ describe('accessible application shell', () => {
     render(<App />)
     const nav = screen.getByRole('navigation', { name: /primary/i })
     expect(within(nav).getByRole('link', { name: /barrier record/i })).toHaveAttribute('href', `/barriers/${fixtureIds.primaryBarrier}`)
-    expect(within(nav).getByRole('link', { name: /work order/i })).toHaveAttribute('href', '/#barrier-records')
+    expect(within(nav).getByRole('link', { name: /work order/i })).toHaveAttribute('href', `/work-orders/${fixtureIds.primaryBarrier}`)
     await user.click(within(nav).getByRole('link', { name: /barrier record/i }))
     expect(window.location.pathname).toBe(`/barriers/${fixtureIds.primaryBarrier}`)
     expect(screen.getByRole('heading', { name: /landing narrowed/i })).toBeInTheDocument()
@@ -192,5 +192,38 @@ describe('accessible application shell', () => {
     expect(within(progress).getAllByRole('listitem')).toHaveLength(6)
     expect(within(progress).getByText('01')).toBeVisible()
     expect(within(progress).getByText('06')).toBeVisible()
+  })
+
+  test('keeps upcoming stage and actor copy legible against the progress band in high contrast', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+
+    await user.click(screen.getByRole('checkbox', { name: /high contrast/i }))
+    const progress = screen.getByRole('navigation', { name: /case progress/i })
+    const upcoming = within(progress).getByRole('link', { name: /validated/i })
+
+    expect(within(upcoming).getByText('Validated')).toHaveStyle({ color: 'var(--paper)' })
+    expect(within(upcoming).getByText('Designated reviewer')).toHaveStyle({ color: 'var(--paper)' })
+    expect(contrastRatio(
+      getComputedStyle(document.documentElement).getPropertyValue('--paper').trim(),
+      getComputedStyle(document.documentElement).getPropertyValue('--ink').trim(),
+    )).toBeGreaterThanOrEqual(7)
+  })
+
+  test('links work order and verification route entries to their matching case records', () => {
+    window.history.replaceState({}, '', `/work-orders/${fixtureIds.primaryBarrier}`)
+    const workOrderView = render(<App />)
+    const workOrder = within(screen.getByRole('navigation', { name: /primary/i })).getByRole('link', { name: /work order/i })
+
+    expect(workOrder).toHaveAttribute('href', `/work-orders/${fixtureIds.primaryBarrier}`)
+    expect(workOrder).toHaveAttribute('aria-current', 'page')
+
+    workOrderView.unmount()
+    window.history.replaceState({}, '', `/verification/${fixtureIds.primaryBarrier}`)
+    render(<App />)
+    const verification = within(screen.getByRole('navigation', { name: /primary/i })).getByRole('link', { name: /verification/i })
+
+    expect(verification).toHaveAttribute('href', `/verification/${fixtureIds.primaryBarrier}`)
+    expect(verification).toHaveAttribute('aria-current', 'page')
   })
 })

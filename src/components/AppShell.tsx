@@ -30,9 +30,11 @@ export function AppShell(props: Props) {
   const hasOpenedDialog = useRef(false)
   const currentPath = window.location.pathname
   const routeBarrierId = currentPath.match(/^\/(?:barriers|work-orders|verification)\/([^/]+)$/)?.[1]
+  const routeBarrier = state.barriers.find(barrier => barrier.id === routeBarrierId)
+  const caseBarrierId = routeBarrier?.id ?? fixtureIds.primaryBarrier
   // Off an entity route (overview, audit, impact) the rail follows the furthest-advanced case, not the first seeded one.
   const furthest = state.barriers.reduce<BarrierStatus | undefined>((best, barrier) => best && statusIndex[best] >= statusIndex[barrier.status] ? best : barrier.status, undefined)
-  const primaryStatus: BarrierStatus = state.barriers.find(barrier => barrier.id === routeBarrierId)?.status ?? furthest ?? 'observed'
+  const primaryStatus: BarrierStatus = routeBarrier?.status ?? furthest ?? 'observed'
 
   useEffect(() => {
     if (confirming) {
@@ -70,9 +72,9 @@ export function AppShell(props: Props) {
   const routeLinks = [
     { label: 'Overview', href: '/', current: currentPath === '/' },
     { label: 'Guided audit', href: '/audit', current: currentPath === '/audit' },
-    { label: 'Barrier record', href: `/barriers/${fixtureIds.primaryBarrier}`, current: currentPath.startsWith('/barriers/') },
-    { label: 'Work order', href: '/#barrier-records', current: currentPath.startsWith('/work-orders/') },
-    { label: 'Verification', href: '/verification', current: currentPath.startsWith('/verification') },
+    { label: 'Barrier record', href: `/barriers/${caseBarrierId}`, current: currentPath === `/barriers/${caseBarrierId}` },
+    { label: 'Work order', href: `/work-orders/${caseBarrierId}`, current: currentPath === `/work-orders/${caseBarrierId}` },
+    { label: 'Verification', href: `/verification/${caseBarrierId}`, current: currentPath === `/verification/${caseBarrierId}` },
     { label: 'Impact report', href: '/impact', current: currentPath === '/impact' },
   ]
 

@@ -317,13 +317,13 @@ button:active:not(:disabled),
 .case-progress small {
   display: block;
   margin-top: 0.2rem;
-  color: var(--rule);
+  color: var(--paper);
 }
 
 /* Upcoming: default quiet state, already the base styling above. */
 .case-progress li[data-state="upcoming"] a strong {
   font-weight: 600;
-  color: var(--rule);
+  color: var(--paper);
 }
 
 /* Complete: filled square marker + check glyph, border tint, no reliance on colour alone. */
