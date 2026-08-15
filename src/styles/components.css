@@ -476,25 +476,141 @@ button:active:not(:disabled),
   flex-wrap: wrap;
 }
 
-/* ---------- Overview: asymmetric 12-column grid ---------- */
+/* ---------- Overview: editorial ledger and numbered register ---------- */
 
-.overview-grid {
+.overview-ledger {
   display: grid;
-  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
-  gap: var(--space-3);
-  align-items: start;
+  grid-template-columns: minmax(0, 1.55fr) minmax(16rem, 0.65fr);
+  padding: 0 !important;
+  overflow: hidden;
+  background: var(--paper-raised) !important;
+  border-color: var(--ink) !important;
+  border-radius: var(--radius-feature) !important;
 }
 
-.status-column {
-  display: grid;
-  gap: var(--space-3);
-  align-self: start;
-  position: sticky;
-  top: calc(var(--header-height) + 82px);
+.overview-ledger__lead {
+  min-width: 0;
+  padding: clamp(1.75rem, 5vw, 4.5rem);
 }
 
-.status-column > section {
+.overview-ledger h1 {
+  max-width: 12ch;
+}
+
+.overview-ledger__standfirst,
+.audit-worksheet__standfirst {
+  color: var(--ink-muted);
+  font-family: var(--font-display);
+  font-size: clamp(1.1rem, 1.5vw, 1.35rem);
+  line-height: 1.45;
+}
+
+.journey-context {
+  max-width: 46rem;
+  margin: var(--space-5) 0 var(--space-4);
+  padding: var(--space-3) 0;
+  border-block: 1px solid var(--rule);
+}
+
+.ledger-label,
+.worksheet-step {
+  margin-bottom: var(--space-1);
+  color: var(--accent-ink);
+  font-size: var(--text-meta);
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.journey-context h2 {
+  font-size: var(--text-subheading);
+}
+
+.journey-context dl,
+.evidence-index dl,
+.journey-strip {
   margin: 0;
+}
+
+.journey-context dl {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-2) var(--space-3);
+}
+
+.journey-context dl div:last-child {
+  grid-column: 1 / -1;
+}
+
+.journey-context dt,
+.journey-strip dt,
+.evidence-index dt {
+  color: var(--ink-muted);
+  font-size: var(--text-meta);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.journey-context dd,
+.journey-strip dd,
+.evidence-index dd {
+  margin: 0.15rem 0 0;
+}
+
+.evidence-index {
+  min-width: 0;
+  padding: clamp(1.5rem, 4vw, 3rem);
+  color: var(--paper-raised);
+  background: var(--ink);
+}
+
+.evidence-index .ledger-label,
+.evidence-index dt {
+  color: var(--paper);
+}
+
+.evidence-index dl {
+  border-top: 1px solid rgba(255, 255, 255, 0.35);
+}
+
+.evidence-index dl div {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: var(--space-2);
+  align-items: baseline;
+  padding: var(--space-3) 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.35);
+}
+
+.evidence-index dd {
+  font-family: var(--font-display);
+  font-size: clamp(1.75rem, 3vw, 2.75rem);
+  line-height: 1;
+}
+
+.evidence-index > p:not(.ledger-label) {
+  margin-top: var(--space-4);
+}
+
+.evidence-index .data-qualification {
+  color: var(--paper);
+  font-size: var(--text-meta-lg);
+}
+
+.finding-register {
+  padding: clamp(1.5rem, 4vw, 3.5rem) !important;
+  background: var(--paper-raised) !important;
+  border-radius: var(--radius-panel) !important;
+}
+
+.register-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  gap: var(--space-3);
+  padding-bottom: var(--space-3);
+  border-bottom: 3px solid var(--ink);
 }
 
 /* ---------- Forms and filters ---------- */
@@ -513,6 +629,7 @@ button:active:not(:disabled),
 }
 
 .filters select {
+  max-width: 100%;
   padding: 0.55rem;
   border: 1px solid var(--ink);
   border-radius: var(--radius-sm);
@@ -521,20 +638,36 @@ button:active:not(:disabled),
 
 .finding-list {
   display: grid;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: finding-record;
+}
+
+.finding-list li {
+  counter-increment: finding-record;
+  display: grid;
+  grid-template-columns: clamp(2.5rem, 5vw, 4.5rem) minmax(0, 1fr);
   gap: var(--space-2);
-  margin-top: var(--space-3);
+  border-bottom: 1px solid var(--rule);
+}
+
+.finding-list li::before {
+  content: counter(finding-record, decimal-leading-zero);
+  padding-top: var(--space-3);
+  color: var(--ink-muted);
+  font-family: var(--font-display);
+  font-size: clamp(1.35rem, 2vw, 2rem);
 }
 
 .finding-list article {
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
-  gap: var(--space-2);
-  padding: var(--space-3);
-  border: 1px solid var(--border);
-  border-left: 4px solid var(--accent);
-  border-radius: var(--radius-md);
-  background: var(--canvas);
+  gap: var(--space-3);
+  min-width: 0;
+  padding: var(--space-3) 0;
 }
 
 .finding-list h3 {
@@ -548,17 +681,110 @@ button:active:not(:disabled),
   color: var(--ink-60);
 }
 
+.finding-record__body {
+  min-width: 0;
+}
+
+.finding-record__body p {
+  overflow-wrap: anywhere;
+}
+
 .empty-state {
   text-align: center;
   padding: var(--space-6) var(--space-3);
 }
 
-/* ---------- Guided audit ---------- */
+/* ---------- Guided audit: field worksheet ---------- */
 
-.audit-grid {
-  display: grid;
-  grid-template-columns: 1.25fr 0.75fr;
+.audit-worksheet {
   gap: var(--space-4);
+}
+
+.audit-worksheet__lead {
+  padding: clamp(1.75rem, 5vw, 4rem) !important;
+  background: var(--paper-raised) !important;
+  border-color: var(--ink) !important;
+  border-top: 5px solid var(--ink) !important;
+}
+
+.audit-worksheet__lead h1 {
+  max-width: 14ch;
+}
+
+.journey-strip {
+  display: grid;
+  grid-template-columns: 0.7fr 0.9fr minmax(0, 1.7fr);
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--rule);
+}
+
+.journey-strip div {
+  min-width: 0;
+}
+
+.journey-strip dd {
+  overflow-wrap: anywhere;
+}
+
+.audit-worksheet__body {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(18rem, 0.85fr);
+  gap: var(--space-3);
+  align-items: start;
+}
+
+.worksheet-section {
+  min-width: 0;
+  padding: clamp(1.25rem, 3vw, 2.25rem);
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-panel);
+}
+
+.worksheet-section h2 {
+  overflow-wrap: anywhere;
+}
+
+.worksheet-evidence {
+  grid-row: span 2;
+  background: var(--paper-raised);
+  border-top: 3px solid var(--ink);
+}
+
+.worksheet-evidence__select {
+  margin-top: var(--space-2);
+  padding: var(--space-1) 0;
+  font-weight: 700;
+}
+
+.worksheet-measurement fieldset {
+  margin-top: var(--space-3);
+}
+
+.worksheet-provenance .privacy-note {
+  border-left-color: var(--ink);
+  background: var(--paper);
+}
+
+.worksheet-action {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) clamp(1.25rem, 3vw, 2.25rem);
+  background: var(--paper-raised);
+  border: 1px solid var(--ink);
+  border-radius: var(--radius-control);
+}
+
+.worksheet-action .worksheet-step {
+  margin-bottom: var(--space-0);
+}
+
+.worksheet-action .button-primary {
+  flex: 0 0 auto;
 }
 
 .standard-note {
@@ -1101,6 +1327,19 @@ fieldset label {
     grid-template-columns: 1fr;
   }
 
+  .overview-ledger {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .overview-ledger__lead {
+    padding: clamp(1.5rem, 6vw, 3rem);
+  }
+
+  .register-heading {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
   .audit-grid {
     grid-template-columns: 1fr;
   }
@@ -1134,7 +1373,66 @@ fieldset label {
 }
 
 @media (max-width: 700px) {
+  .audit-worksheet__body,
+  .journey-strip {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .worksheet-evidence {
+    grid-row: auto;
+  }
+
+  .worksheet-action {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .worksheet-action .button-primary {
+    width: 100%;
+  }
+
   .metric-grid {
     grid-template-columns: 1fr;
   }
+}
+
+@media (max-width: 460px) {
+  .journey-context dl,
+  .finding-list article {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .journey-context dl div:last-child {
+    grid-column: auto;
+  }
+
+  .finding-list article .status-badge {
+    justify-self: start;
+  }
+
+  .filters,
+  .filters label,
+  .filters select {
+    width: 100%;
+  }
+}
+
+html[data-text-size="large"] .overview-ledger,
+html[data-text-size="large"] .audit-worksheet__body,
+html[data-text-size="large"] .journey-strip {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+html[data-text-size="large"] .worksheet-evidence {
+  grid-row: auto;
+}
+
+html[data-text-size="large"] .register-heading,
+html[data-text-size="large"] .worksheet-action {
+  align-items: stretch;
+  flex-direction: column;
+}
+
+html[data-text-size="large"] .worksheet-action .button-primary {
+  align-self: start;
 }

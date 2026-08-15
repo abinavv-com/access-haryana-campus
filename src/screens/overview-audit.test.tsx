@@ -8,6 +8,18 @@ import { OverviewScreen } from './OverviewScreen'
 import { AuditScreen } from './AuditScreen'
 
 describe('overview', () => {
+  test('uses the editorial overview ledger composition', () => {
+    render(<OverviewScreen state={createDemoFixture()} onStartAudit={() => undefined} />)
+
+    expect(screen.getByRole('heading', { level: 1 }).closest('section')).toHaveClass('overview-ledger')
+  })
+
+  test('uses the semantic finding register composition', () => {
+    render(<OverviewScreen state={createDemoFixture()} onStartAudit={() => undefined} />)
+
+    expect(screen.getByRole('heading', { level: 2, name: /barrier records/i }).closest('section')).toHaveClass('finding-register')
+  })
+
   test('filters fictional barrier metrics by lifecycle status and severity', async () => {
     const user = userEvent.setup()
     render(<OverviewScreen state={createDemoFixture()} onStartAudit={() => undefined} />)
@@ -28,6 +40,12 @@ describe('guided audit', () => {
     const [state, dispatch] = useReducer(demoReducer, undefined, createDemoFixture)
     return <><AuditScreen state={state} dispatch={dispatch} navigate={navigate} /><output data-testid="count">{state.barriers.length}</output></>
   }
+
+  test('uses the field worksheet composition', () => {
+    render(<Harness />)
+
+    expect(screen.getByRole('heading', { level: 1, name: /main gate/i }).closest('form')).toHaveClass('audit-worksheet')
+  })
 
   test('shows exact provenance and qualified illustrative evidence', () => {
     render(<Harness />)
