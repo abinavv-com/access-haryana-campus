@@ -20,6 +20,28 @@ describe('overview', () => {
     expect(screen.getByRole('heading', { level: 2, name: /barrier records/i }).closest('section')).toHaveClass('finding-register')
   })
 
+  test('links every visible finding title to its exact barrier route', () => {
+    render(<OverviewScreen state={createDemoFixture()} onStartAudit={() => undefined} />)
+
+    const routes = [
+      ['Landing narrowed by stored materials', '/barriers/barrier-obstructed-landing'],
+      ['Ramp gradient requires measurement review', '/barriers/barrier-ramp-gradient'],
+      ['Admissions direction is not signed', '/barriers/barrier-directional-signage'],
+    ] as const
+    for (const [title, href] of routes) {
+      expect(screen.getByRole('link', { name: title })).toHaveAttribute('href', href)
+    }
+  })
+
+  test('renders an accessible recovery state when journey context is unavailable', () => {
+    const state = createDemoFixture()
+    state.journeys = []
+
+    render(<OverviewScreen state={state} onStartAudit={() => undefined} />)
+
+    expect(screen.getByRole('status')).toHaveTextContent(/journey context is unavailable/i)
+  })
+
   test('filters fictional barrier metrics by lifecycle status and severity', async () => {
     const user = userEvent.setup()
     render(<OverviewScreen state={createDemoFixture()} onStartAudit={() => undefined} />)

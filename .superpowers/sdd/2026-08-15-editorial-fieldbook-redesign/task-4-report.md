@@ -49,3 +49,52 @@ tsc -b && vite build
 ## Concerns
 
 None.
+
+## Review fix — round 1 of 5
+
+### RED evidence
+
+Added focused assertions for exact barrier links on all three initially visible findings and a valid empty-journeys state, then ran:
+
+```text
+npx vitest run src/screens/overview-audit.test.tsx
+```
+
+Result: 2 failed, 8 passed. The link assertion could not find a linked finding title, and the empty-journeys render threw while reading `journey.name`.
+
+### Implementation
+
+- Linked each visible finding title to `/barriers/${finding.id}` without changing ordered-list/article semantics, filters, record content, or status labels.
+- Guarded journey-dependent overview markup. When no journey exists, the ledger now renders a `role="status"` recovery message, reports checkpoints as unavailable, omits the invalid audit CTA, and keeps the findings register usable.
+
+### GREEN evidence
+
+```text
+npx vitest run src/screens/overview-audit.test.tsx
+Test Files  1 passed (1)
+Tests  10 passed (10)
+```
+
+```text
+npx vitest run src/screens/overview-audit.test.tsx src/app/App.test.tsx
+Test Files  2 passed (2)
+Tests  26 passed (26)
+```
+
+```text
+npm run build
+tsc -b && vite build
+✓ built in 568ms
+```
+
+`git diff --check` completed with exit code 0.
+
+### Commit
+
+`fix: link findings and guard missing journey`
+
+### Self-review and concerns
+
+- Confirmed links use each record's exact persisted ID and standard anchor navigation.
+- Confirmed an empty journeys array no longer dereferences journey fields and still exposes records and filters.
+- No blocking concerns. The deferred 390px browser evidence remains assigned to Task 7 as requested.
