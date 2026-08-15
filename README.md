@@ -25,7 +25,7 @@ git diff --check
 
 The production output is written to `dist/`.
 
-Task 10 browser acceptance evidence is retained in `verification/task-10/`. It includes the completed keyboard journey, 200%-equivalent reflow, large-text and reduced-motion preferences, forced-colours rendering, missing-image fallback, and the one-page print PDF plus its inspected preview. The current end-to-end design sequence is `verification/design/tour-1-*.png` through `tour-9-*.png`; obsolete iterations have been removed.
+The current end-to-end browser acceptance evidence is in `verification/redesign/`. It contains the nine-frame keyboard journey, 390px large-text/reduced-motion/forced-colours captures, the one-page impact PDF and its inspected Chromium preview, and `acceptance-report.md` with exact measurements and prototype boundaries. Earlier Task 10 and design-tour evidence is retained in `verification/task-10/` and `verification/design/` as historical reference.
 
 The impact report includes only accepted, verified records with recorded before/after journey outcomes. It derives journey success rates, time saved, elapsed days, illustrative pilot spend, and source record IDs; missing outcomes are excluded rather than inferred.
 

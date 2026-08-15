@@ -1623,10 +1623,14 @@ fieldset label {
 
 /* ---------- Report metrics: a varied editorial measure set ---------- */
 
+.impact-report {
+  container: impact-report / inline-size;
+}
+
 @media screen {
   .impact-report > .impact-cover {
     display: grid;
-    grid-template-columns: minmax(0, 1.45fr) minmax(16rem, 0.55fr);
+    grid-template-columns: minmax(0, 1fr);
     padding: 0;
     overflow: hidden;
     background: var(--paper-raised);
@@ -1736,7 +1740,11 @@ fieldset label {
   max-width: 30ch;
 }
 
-@media screen and (min-width: 701px) {
+@container impact-report (min-width: 701px) {
+  .impact-report > .impact-cover {
+    grid-template-columns: minmax(0, 1.45fr) minmax(16rem, 0.55fr);
+  }
+
   .metric-grid {
     grid-template-columns: repeat(12, minmax(0, 1fr));
   }

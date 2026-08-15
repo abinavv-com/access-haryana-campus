@@ -53,6 +53,13 @@ test('keeps large-text metrics single-column and lets print rules compact impact
   expect(impactRulesWithImportant).toEqual([])
 })
 
+test('bases wide impact geometry on its rendered inline size for 200%-equivalent reflow', () => {
+  const css = readFileSync(resolve('src/styles/components.css'), 'utf8')
+  expect(css).toMatch(/\.impact-report\s*\{[^}]*container:\s*impact-report\s*\/\s*inline-size/s)
+  expect(css).toMatch(/@container impact-report \(min-width:\s*701px\)\s*\{[\s\S]*?\.impact-report > \.impact-cover\s*\{[^}]*grid-template-columns:\s*minmax\(0,\s*1\.45fr\)\s+minmax\(16rem,\s*0\.55fr\)/s)
+  expect(css).toMatch(/@container impact-report \(min-width:\s*701px\)\s*\{[\s\S]*?\.metric-grid\s*\{[^}]*grid-template-columns:\s*repeat\(12,\s*minmax\(0,\s*1fr\)\)/s)
+})
+
 test('asks for voluntary consent without requesting a diagnosis and identifies the independent verifier boundary', () => {
   render(<VerificationHarness />)
   expect(screen.getByText(/participation is voluntary/i)).toBeInTheDocument()
