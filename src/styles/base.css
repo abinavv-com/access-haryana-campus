@@ -1,0 +1,174 @@
+/* Access Haryana Campus — document and typography baseline */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--canvas);
+  color: var(--ink);
+  color-scheme: light;
+  font-family: var(--font-interface);
+  font-size: 100%;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-interface);
+  font-size: var(--text-body);
+  line-height: 1.5;
+  font-weight: 400;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+a {
+  color: inherit;
+}
+
+button,
+select,
+input,
+textarea {
+  font-family: var(--font-interface);
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: inherit;
+  color: inherit;
+}
+
+/* Heading scale */
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  margin: 0 0 0.5em;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+h1 {
+  font-size: var(--text-display);
+  line-height: 1.05;
+  letter-spacing: -0.035em;
+  scroll-margin-top: 140px;
+}
+
+h2 {
+  font-size: var(--text-heading);
+  line-height: 1.15;
+  scroll-margin-top: 140px;
+}
+
+h3 {
+  font-size: var(--text-subheading);
+  line-height: 1.25;
+  scroll-margin-top: 140px;
+}
+
+p {
+  margin: 0 0 1em;
+  max-width: 68ch;
+}
+
+p:last-child {
+  margin-bottom: 0;
+}
+
+small {
+  font-size: var(--text-meta-lg);
+}
+
+/* Links: underline always visible, not hover-only, per no-hover-only-disclosure rule */
+a:not(.button-primary):not(.button-secondary) {
+  text-decoration-line: underline;
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 3px;
+}
+
+/* Focus: 3px ring, 2px offset, always visible, never suppressed */
+a:focus-visible,
+button:focus-visible,
+select:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* Minimum 44x44px interactive targets */
+button,
+select,
+.check-control,
+input[type="checkbox"],
+input[type="radio"] {
+  min-height: 44px;
+}
+
+input[type="checkbox"],
+input[type="radio"] {
+  min-width: 20px;
+  min-height: 20px;
+  width: 20px;
+  height: 20px;
+  accent-color: var(--ink);
+}
+
+.check-control {
+  min-height: 44px;
+}
+
+/* Skip link */
+.skip-link {
+  position: fixed;
+  z-index: 100;
+  left: var(--space-1);
+  top: var(--space-1);
+  transform: translateY(-150%);
+  padding: var(--space-1) var(--space-2);
+  background: var(--ink);
+  color: #fff;
+  font-weight: 700;
+  text-decoration: none;
+  border-radius: var(--radius-sm);
+  transition: transform var(--motion-fast) var(--motion-ease);
+}
+
+.skip-link:focus {
+  transform: none;
+}
+
+/* Reduced motion: respect OS setting and the in-app toggle */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
+
+html[data-reduced-motion="true"] *,
+html[data-reduced-motion="true"] *::before,
+html[data-reduced-motion="true"] *::after {
+  scroll-behavior: auto !important;
+  transition: none !important;
+  animation: none !important;
+}
+
+/* Forced colours: rely on system palette, keep borders visible */
+@media (forced-colors: active) {
+  * {
+    border-color: CanvasText !important;
+  }
+}

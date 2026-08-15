@@ -1,6 +1,8 @@
 node_modules/
 dist/
+*.tsbuildinfo
 coverage/
 .worktrees/
 .superdesign/tmp/
+.superpowers/brainstorm/
 

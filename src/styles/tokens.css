@@ -1,0 +1,115 @@
+/* Access Haryana Campus — design tokens
+   Source of truth: .superdesign/design-system.md */
+:root {
+  /* Colour roles */
+  --paper: #eeeae1;
+  --paper-raised: #fffdf8;
+  --ink: #182123;
+  --ink-muted: #59605e;
+  --accent: #c95732;
+  --accent-ink: #873d25;
+  --rule: #c9c2b6;
+  --canvas: var(--paper);
+  --surface: #f8f5ee;
+  --muted: var(--paper);
+  --accent-hover: #a84325;
+  --focus: #7a321e;
+  --verified: #2f6654;
+  --warning: #9a6700;
+  --danger: #b42318;
+  --info: #27566a;
+
+  /* Ink at opacity, used for borders, dividers and secondary text */
+  --ink-05: rgba(24, 33, 35, 0.05);
+  --ink-10: rgba(24, 33, 35, 0.1);
+  --ink-15: rgba(24, 33, 35, 0.15);
+  --ink-30: rgba(24, 33, 35, 0.3);
+  --ink-60: rgba(24, 33, 35, 0.6);
+  --border: var(--rule);
+  --border-strong: var(--ink);
+
+  /* Surfaces tinted by status, kept low-saturation so text/icon still carries meaning */
+  --verified-tint: #e5eee8;
+  --warning-tint: #f6efe0;
+  --danger-tint: #fbe9e7;
+  --info-tint: #e6eff0;
+  --accent-tint: #f7e5de;
+
+  /* Spacing scale (existing --space-3 / --space-4 kept stable for callers) */
+  --space-0: 0.25rem;
+  --space-1: 0.5rem;
+  --space-2: 0.75rem;
+  --space-3: 1.5rem;
+  --space-4: 2rem;
+  --space-5: 2.5rem;
+  --space-6: 3rem;
+  --space-7: 4rem;
+
+  /* Hierarchical radii for feature regions, panels, and controls */
+  --radius-feature: 24px;
+  --radius-panel: 16px;
+  --radius-control: 10px;
+  --radius-sm: var(--radius-control);
+  --radius-md: var(--radius-panel);
+  --radius-lg: var(--radius-feature);
+  --radius: var(--radius-panel);
+
+  /* Elevation is minimal and functional, never decorative */
+  --shadow-sm: 0 1px 2px rgba(24, 33, 35, 0.08);
+  --shadow-md: 0 4px 12px rgba(24, 33, 35, 0.1);
+
+  /* Type scale, matching documented px sizes */
+  --text-display: clamp(2.25rem, 4vw + 1rem, 4rem); /* 36-64px */
+  --text-heading: clamp(1.5rem, 1.5vw + 1rem, 2rem); /* 24-32px */
+  --text-subheading: 1.125rem; /* 18px */
+  --text-body: 1rem; /* 16px */
+  --text-body-lg: 1.125rem; /* 18px */
+  --text-meta: 0.8125rem; /* 13px */
+  --text-meta-lg: 0.875rem; /* 14px */
+
+  /* Motion — restrained, 140-220ms, opacity/translate only */
+  --motion-fast: 140ms;
+  --motion-base: 200ms;
+  --motion-ease: cubic-bezier(0.2, 0, 0, 1);
+
+  /* Layout metrics */
+  --header-height: 72px;
+  --rail-width: 280px;
+  --content-max: 1040px;
+
+  --font-display: Georgia, "Times New Roman", serif;
+  --font-interface: "Satoshi", Arial, Helvetica, sans-serif;
+
+  font-variant-numeric: tabular-nums;
+}
+
+/* Accessibility preference overrides — persisted separately from demo-case reset */
+html[data-text-size="large"] {
+  font-size: 118.75%;
+}
+
+html[data-high-contrast="true"] {
+  --paper: #ffffff;
+  --paper-raised: #ffffff;
+  --canvas: #ffffff;
+  --ink: #000000;
+  --ink-muted: #000000;
+  --surface: #ffffff;
+  --muted: #ffffff;
+  --rule: #000000;
+  --border: #000000;
+  --border-strong: #000000;
+  --accent: #a6390d;
+  --accent-ink: #7a2909;
+  --accent-hover: #7a2909;
+  --focus: #0b4a80;
+  --verified: #0f4a30;
+  --warning: #6b4a00;
+  --danger: #7e1810;
+  --info: #0b4a80;
+  --verified-tint: #ffffff;
+  --warning-tint: #ffffff;
+  --danger-tint: #ffffff;
+  --info-tint: #ffffff;
+  --accent-tint: #ffffff;
+}

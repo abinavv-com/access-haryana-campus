@@ -1,0 +1,124 @@
+/* Access Haryana Campus — print
+   The impact report must render on exactly one A4 page: heading, metrics,
+   traceability records and the disclaimer all legible and unclipped.
+
+   This stylesheet is imported last by the application entry point so its
+   equal-specificity print rules win through normal cascade order. */
+
+@media print {
+  .demo-banner,
+  .app-header,
+  .perspective,
+  .lifecycle,
+  .no-print,
+  .skip-link {
+    display: none;
+  }
+
+  html,
+  body {
+    background: #fff;
+  }
+
+  .app-layout {
+    display: block;
+    padding: 0;
+    grid-template-columns: none;
+  }
+
+  .impact-report {
+    display: block;
+    color: #000;
+    font-size: 7pt;
+    line-height: 1.15;
+  }
+
+  .impact-report.screen-stack {
+    display: block;
+    gap: 0;
+  }
+
+  .impact-report h1 {
+    font-size: 19pt;
+    margin: 4pt 0;
+    letter-spacing: normal;
+  }
+
+  .impact-report h2,
+  .impact-report h3 {
+    font-size: 9pt;
+    margin: 2pt 0;
+  }
+
+  .impact-report p {
+    margin: 2pt 0;
+    max-width: none;
+  }
+
+  .impact-report .eyebrow {
+    font-size: 6pt;
+  }
+
+  .impact-report > section {
+    break-inside: avoid;
+    background: #fff;
+    border: 1px solid #000;
+    border-radius: 0;
+    box-shadow: none;
+    margin: 0 0 4pt;
+    padding: 5pt;
+  }
+
+  .metric-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 3pt;
+  }
+
+  .metric-card {
+    padding: 4pt;
+    border-radius: 0;
+  }
+
+  .metric-value {
+    font-size: 16pt;
+    margin: 1pt 0;
+  }
+
+  .metric-card p,
+  .metric-card small {
+    margin: 1pt 0;
+    font-size: 6pt;
+  }
+
+  .trace-record {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4pt;
+    margin: 3pt 0 0;
+    padding: 4pt;
+    background: #fff;
+    border: 1px solid #000;
+    border-radius: 0;
+  }
+
+  .trace-record dl div {
+    padding: 1pt 0;
+    gap: 4pt;
+    grid-template-columns: 5rem 1fr;
+  }
+
+  .print-disclaimer {
+    background: #fff;
+    border: none;
+    border-top: 2px solid #000;
+    border-radius: 0;
+    padding: 3pt 0 0;
+    font-size: 7pt;
+  }
+
+  @page {
+    size: A4;
+    margin: 8mm;
+  }
+}

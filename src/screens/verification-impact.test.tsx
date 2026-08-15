@@ -1,0 +1,169 @@
+import { useReducer } from 'react'
+import { render, screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
+import { expect, test, vi } from 'vitest'
+import { readFileSync } from 'node:fs'
+import { resolve } from 'node:path'
+import { createDemoFixture, fixtureIds } from '../data/demo-fixture.v1'
+import { demoReducer } from '../domain/demoReducer'
+import { illustrativeDataLabel, type DemoState } from '../domain/types'
+import { ImpactScreen } from './ImpactScreen'
+import { VerificationScreen } from './VerificationScreen'
+
+function awaitingState(): DemoState {
+  const state = createDemoFixture()
+  state.barriers[0].status = 'awaiting_verification'
+  state.workOrders.push({
+    id: 'work-order-primary', barrierId: fixtureIds.primaryBarrier, dataLabel: illustrativeDataLabel,
+    ownerRole: 'Campus facilities officer', remedy: 'Clear the landing', costBand: '₹10,000–₹25,000', dueDate: '2026-08-20',
+    repairEvidence: [{ id: 'repair-after', dataLabel: illustrativeDataLabel, kind: 'illustrative_photo', path: '/media/gradual-ramp-pathway.jpg', altText: 'Illustrative repaired route evidence.', capturedAt: '2026-08-14T11:00:00.000Z' }],
+  })
+  return state
+}
+
+function VerificationHarness() {
+  const [state, dispatch] = useReducer(demoReducer, undefined, awaitingState)
+  return <VerificationScreen state={state} dispatch={dispatch} barrierId={fixtureIds.primaryBarrier} navigate={() => undefined} />
+}
+
+test('uses the editorial verification and impact report compositions', () => {
+  render(<VerificationHarness />)
+  const consentHeading = screen.getByRole('heading', { name: /voluntary consent and independence/i })
+  expect(consentHeading.closest('section')).toHaveClass('verification-charter')
+  const beforeTime = screen.getByLabelText(/recorded journey time before repair/i)
+  expect(beforeTime.closest('div')).toHaveClass('journey-comparison')
+
+  const state = awaitingState()
+  state.barriers[0].status = 'verified'
+  render(<ImpactScreen state={state} navigate={() => undefined} />)
+  expect(screen.getByRole('heading', { level: 1, name: /bounded verified outcomes/i }).closest('section')).toHaveClass('impact-cover')
+  expect(screen.getByRole('heading', { level: 2, name: /what the bounded retests show/i }).closest('section')).toHaveClass('metric-composition')
+  expect(screen.getByRole('heading', { level: 2, name: /traceable outcomes/i }).closest('section')).toHaveClass('source-ledger')
+})
+
+test('keeps large-text metrics single-column and lets print rules compact impact sections', () => {
+  const css = readFileSync(resolve('src/styles/components.css'), 'utf8')
+  expect(css).toMatch(/html\[data-text-size="large"\] \.metric-grid > \.report-metric\s*\{[^}]*grid-column:\s*auto/s)
+  expect(css).toMatch(/html\[data-text-size="large"\] \.metric-grid > \.report-metric:nth-child\(7\)\s*\{[^}]*display:\s*block/s)
+  expect(css).toMatch(/html\[data-text-size="large"\] \.metric-grid > \.report-metric:nth-child\(7\) > \*\s*\{[^}]*grid-column:\s*auto/s)
+
+  expect(css).toMatch(/@media screen\s*\{[^}]*\.impact-report > \.impact-cover/s)
+  expect(css).toMatch(/\.impact-report > \.metric-composition,\s*\.impact-report > \.source-ledger/s)
+  const impactRulesWithImportant = css.match(/[^{}]*(?:\.impact-cover|\.metric-composition|\.source-ledger)[^{}]*\{[^{}]*!important[^{}]*\}/g) ?? []
+  expect(impactRulesWithImportant).toEqual([])
+})
+
+test('bases wide impact geometry on its rendered inline size for 200%-equivalent reflow', () => {
+  const css = readFileSync(resolve('src/styles/components.css'), 'utf8')
+  expect(css).toMatch(/\.impact-report\s*\{[^}]*container:\s*impact-report\s*\/\s*inline-size/s)
+  expect(css).toMatch(/@container impact-report \(min-width:\s*701px\)\s*\{[\s\S]*?\.impact-report > \.impact-cover\s*\{[^}]*grid-template-columns:\s*minmax\(0,\s*1\.45fr\)\s+minmax\(16rem,\s*0\.55fr\)/s)
+  expect(css).toMatch(/@container impact-report \(min-width:\s*701px\)\s*\{[\s\S]*?\.metric-grid\s*\{[^}]*grid-template-columns:\s*repeat\(12,\s*minmax\(0,\s*1fr\)\)/s)
+})
+
+test('asks for voluntary consent without requesting a diagnosis and identifies the independent verifier boundary', () => {
+  render(<VerificationHarness />)
+  expect(screen.getByText(/participation is voluntary/i)).toBeInTheDocument()
+  expect(screen.getByText(/refusal has no consequence/i)).toBeInTheDocument()
+  expect(screen.getByText(/we do not ask for.*diagnosis/i)).toBeInTheDocument()
+  expect(screen.getByText((_, element) => element?.tagName === 'P' && /repair owner:.*campus facilities officer/i.test(element.textContent ?? ''))).toBeInTheDocument()
+  expect(screen.getByLabelText(/verifier role/i)).not.toHaveValue('Campus facilities officer')
+  expect(screen.getByRole('button', { name: /accept for this journey and test conditions/i })).toBeInTheDocument()
+})
+
+test('requires rejection reason, returns to rework and preserves earlier repair evidence', async () => {
+  const user = userEvent.setup()
+  render(<VerificationHarness />)
+  await user.click(screen.getByLabelText(/i freely consent/i))
+  await user.click(screen.getByRole('button', { name: /send to rework/i }))
+  expect(screen.getByRole('alert')).toHaveTextContent(/rejection reason is required/i)
+  await user.type(screen.getByLabelText(/rework reason/i), 'The landing still catches the front caster at the east edge.')
+  await user.click(screen.getByRole('button', { name: /send to rework/i }))
+  expect(screen.getByRole('heading', { name: /rework required/i })).toBeInTheDocument()
+  expect(screen.getAllByText(/landing still catches/i).length).toBeGreaterThan(0)
+  expect(screen.getByText(/illustrative repaired route evidence/i)).toBeInTheDocument()
+  expect(screen.getByText(/earlier audit and repair evidence remains preserved/i)).toBeInTheDocument()
+})
+
+test('records another inspection without advancing the awaiting-verification status', async () => {
+  const user = userEvent.setup()
+  render(<VerificationHarness />)
+  await user.click(screen.getByLabelText(/i freely consent/i))
+  await user.click(screen.getByRole('button', { name: /request another inspection/i }))
+  expect(screen.getAllByText(/awaiting verification/i).length).toBeGreaterThan(0)
+  expect(screen.getByText(/another independent inspection requested/i)).toBeInTheDocument()
+})
+
+test('records the actual verification time through an injectable clock', async () => {
+  const user = userEvent.setup()
+  const dispatch = vi.fn()
+  render(<VerificationScreen state={awaitingState()} dispatch={dispatch} barrierId={fixtureIds.primaryBarrier} navigate={() => undefined} now={() => '2026-08-16T14:30:00.000Z'} />)
+  await user.click(screen.getByLabelText(/i freely consent/i))
+  await user.click(screen.getByRole('button', { name: /accept for this journey and test conditions/i }))
+  expect(dispatch).toHaveBeenCalledWith(expect.objectContaining({
+    command: expect.objectContaining({ timestamp: '2026-08-16T14:30:00.000Z' }),
+  }))
+})
+
+test('presents activity as an ordered, attributed chronology', () => {
+  const state = awaitingState()
+  const timestamp = '2026-08-16T14:30:00.000Z'
+  state.activity.push({
+    id: 'activity-awaiting-verification',
+    barrierId: fixtureIds.primaryBarrier,
+    dataLabel: illustrativeDataLabel,
+    actorPerspective: 'verifier',
+    fromStatus: 'assigned',
+    toStatus: 'awaiting_verification',
+    reason: 'Independent retest is ready to be scheduled.',
+    timestamp,
+  })
+
+  render(<VerificationScreen state={state} dispatch={() => undefined} barrierId={fixtureIds.primaryBarrier} navigate={() => undefined} />)
+
+  const event = screen.getByText(/independent retest is ready to be scheduled/i).closest('li')
+  expect(event?.closest('ol')).toHaveClass('case-chronology')
+  expect(event).toHaveTextContent(/status:\s*awaiting verification/i)
+  expect(event).toHaveTextContent(/reason:\s*independent retest is ready to be scheduled/i)
+  expect(event).toHaveTextContent(/actor:\s*verifier/i)
+  expect(event?.querySelector('time')).toHaveAttribute('dateTime', timestamp)
+  expect(event?.querySelector('time')).toHaveTextContent(new Date(timestamp).toLocaleString('en-IN'))
+})
+
+test('loads print rules after shared component rules without cascade overrides', () => {
+  const main = readFileSync(resolve('src/main.tsx'), 'utf8')
+  const impact = readFileSync(resolve('src/screens/ImpactScreen.tsx'), 'utf8')
+  const print = readFileSync(resolve('src/styles/print.css'), 'utf8')
+  expect(main.indexOf("./styles/print.css")).toBeGreaterThan(main.indexOf("./styles/components.css"))
+  expect(impact).not.toContain("../styles/print.css")
+  expect(print).not.toContain('!important')
+})
+
+test('reports only accepted verified records with source links and a qualified print summary', async () => {
+  const state = awaitingState()
+  state.barriers[0].status = 'verified'
+  state.verifications.push({ id: 'verification-primary', barrierId: fixtureIds.primaryBarrier, workOrderId: 'work-order-primary', dataLabel: illustrativeDataLabel, decision: 'accepted', definedTestConditions: 'Dry daylight journey from main gate to admissions using a manual wheelchair.', beforeOutcome: { succeeded: false, completionMinutes: 12 }, afterOutcome: { succeeded: true, completionMinutes: 7 }, feedback: 'Journey completed.', timestamp: '2026-08-15T10:00:00.000Z' })
+  state.verifications.push({ id: 'verification-missing-outcome', barrierId: fixtureIds.primaryBarrier, workOrderId: 'work-order-primary', dataLabel: illustrativeDataLabel, decision: 'accepted', definedTestConditions: 'An incomplete record with no before or retest outcome.', feedback: 'Outcome fields were not recorded.', timestamp: '2026-08-15T11:00:00.000Z' })
+  state.activity.push({ id: 'activity-verified-primary', barrierId: fixtureIds.primaryBarrier, dataLabel: illustrativeDataLabel, actorPerspective: 'verifier', fromStatus: 'awaiting_verification', toStatus: 'verified', reason: 'Accepted for the recorded journey and test conditions.', timestamp: '2026-08-15T10:00:00.000Z' })
+  state.workOrders.push({ id: 'work-order-unverified', barrierId: fixtureIds.rampBarrier, dataLabel: illustrativeDataLabel, ownerRole: 'Estates', remedy: 'Review ramp', costBand: '₹25,000', dueDate: '2026-08-25', repairEvidence: [] })
+  const print = vi.spyOn(window, 'print').mockImplementation(() => undefined)
+  const user = userEvent.setup()
+  render(<ImpactScreen state={state} navigate={() => undefined} />)
+  expect(screen.getAllByText('1', { selector: '.metric-value' })).toHaveLength(2)
+  expect(screen.getByText('0%', { selector: '.metric-value' })).toBeInTheDocument()
+  expect(screen.getByText('100%', { selector: '.metric-value' })).toBeInTheDocument()
+  const timeSaved = screen.getByText('5 min', { selector: '.metric-value' })
+  expect(timeSaved).toBeInTheDocument()
+  expect(timeSaved.closest('article')).toHaveClass('report-metric')
+  expect(screen.getByText('5 days', { selector: '.metric-value' })).toBeInTheDocument()
+  expect(screen.getByRole('link', { name: /barrier-obstructed-landing/i })).toBeInTheDocument()
+  expect(screen.getByRole('link', { name: /work-order-primary/i })).toBeInTheDocument()
+  expect(screen.getByText(/repair-after/i)).toBeInTheDocument()
+  expect(screen.getByText(/verification-primary/i)).toBeInTheDocument()
+  expect(screen.getByText(/activity-verified-primary/i)).toBeInTheDocument()
+  expect(screen.queryByText(/verification-missing-outcome/i)).not.toBeInTheDocument()
+  expect(screen.queryByText(/work-order-unverified/i)).not.toBeInTheDocument()
+  expect(screen.getAllByText(/illustrative demo data/i).length).toBeGreaterThan(0)
+  expect(screen.getByText(/bounded retest.*not.*certification.*legal compliance/i)).toBeInTheDocument()
+  await user.click(screen.getByRole('button', { name: /print evidence summary/i }))
+  expect(print).toHaveBeenCalledOnce()
+})
