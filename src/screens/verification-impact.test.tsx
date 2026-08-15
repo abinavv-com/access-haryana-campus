@@ -26,6 +26,20 @@ function VerificationHarness() {
   return <VerificationScreen state={state} dispatch={dispatch} barrierId={fixtureIds.primaryBarrier} navigate={() => undefined} />
 }
 
+test('uses the editorial verification and impact report compositions', () => {
+  render(<VerificationHarness />)
+  const consentHeading = screen.getByRole('heading', { name: /voluntary consent and independence/i })
+  expect(consentHeading.closest('section')).toHaveClass('verification-charter')
+  const beforeTime = screen.getByLabelText(/recorded journey time before repair/i)
+  expect(beforeTime.closest('div')).toHaveClass('journey-comparison')
+
+  const state = awaitingState()
+  state.barriers[0].status = 'verified'
+  render(<ImpactScreen state={state} navigate={() => undefined} />)
+  expect(screen.getByRole('heading', { level: 1, name: /bounded verified outcomes/i }).closest('section')).toHaveClass('impact-cover')
+  expect(screen.getByRole('heading', { level: 2, name: /traceable outcomes/i }).closest('section')).toHaveClass('source-ledger')
+})
+
 test('asks for voluntary consent without requesting a diagnosis and identifies the independent verifier boundary', () => {
   render(<VerificationHarness />)
   expect(screen.getByText(/participation is voluntary/i)).toBeInTheDocument()
