@@ -588,7 +588,7 @@ fieldset label {
   font-size: var(--text-meta);
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: var(--accent);
+  color: var(--accent-ink);
 }
 
 .evidence-card .provenance {

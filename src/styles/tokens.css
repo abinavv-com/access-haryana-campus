@@ -7,6 +7,7 @@
   --ink: #182123;
   --ink-muted: #59605e;
   --accent: #c95732;
+  --accent-ink: #873d25;
   --rule: #c9c2b6;
   --canvas: var(--paper);
   --surface: #f8f5ee;
@@ -44,7 +45,7 @@
   --space-6: 3rem;
   --space-7: 4rem;
 
-  /* Radii — 4-10px per spec */
+  /* Hierarchical radii for feature regions, panels, and controls */
   --radius-feature: 24px;
   --radius-panel: 16px;
   --radius-control: 10px;
@@ -99,6 +100,7 @@ html[data-high-contrast="true"] {
   --border: #000000;
   --border-strong: #000000;
   --accent: #a6390d;
+  --accent-ink: #7a2909;
   --accent-hover: #7a2909;
   --focus: #0b4a80;
   --verified: #0f4a30;

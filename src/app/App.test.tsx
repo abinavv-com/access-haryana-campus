@@ -3,12 +3,28 @@ import userEvent from '@testing-library/user-event'
 import { readFileSync } from 'node:fs'
 import { beforeEach, describe, expect, test, vi } from 'vitest'
 import { App } from './App'
+import { EvidenceImage } from '../components/EvidenceImage'
 import { DEMO_STORAGE_KEY, saveDemoState } from '../data/storage'
 import { createDemoFixture, fixtureIds } from '../data/demo-fixture.v1'
 
 const documentStyles = document.createElement('style')
-documentStyles.textContent = `${readFileSync('src/styles/tokens.css', 'utf8')}\n${readFileSync('src/styles/base.css', 'utf8')}`
+documentStyles.textContent = `${readFileSync('src/styles/tokens.css', 'utf8')}\n${readFileSync('src/styles/base.css', 'utf8')}\n${readFileSync('src/styles/components.css', 'utf8')}`
 document.head.append(documentStyles)
+
+function contrastRatio(foreground: string, background: string) {
+  const luminance = (hex: string) => {
+    const channels = hex.slice(1).match(/.{2}/g)
+    if (!channels) throw new Error(`Expected a hexadecimal colour, received ${hex}`)
+    const [red, green, blue] = channels.map(channel => {
+      const value = Number.parseInt(channel, 16) / 255
+      return value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4
+    })
+    return red * 0.2126 + green * 0.7152 + blue * 0.0722
+  }
+
+  const [lighter, darker] = [luminance(foreground), luminance(background)].sort((a, b) => b - a)
+  return (lighter + 0.05) / (darker + 0.05)
+}
 
 describe('accessible application shell', () => {
   beforeEach(() => {
@@ -23,6 +39,13 @@ describe('accessible application shell', () => {
     expect(screen.getByRole('navigation', { name: /primary/i })).toBeInTheDocument()
     expect(screen.getByRole('navigation', { name: /demo journey/i })).toBeInTheDocument()
     expect(screen.getByRole('main')).toHaveAttribute('id', 'main-content')
+  })
+
+  test('uses a dark accent with sufficient contrast for evidence captions', () => {
+    render(<EvidenceImage evidence={createDemoFixture().barriers[0].evidence[0]} />)
+
+    expect(screen.getByText(/illustrative demo evidence/i)).toHaveStyle({ color: 'var(--accent-ink)' })
+    expect(contrastRatio(getComputedStyle(document.documentElement).getPropertyValue('--accent-ink').trim(), '#f8f5ee')).toBeGreaterThanOrEqual(4.5)
   })
 
   test('identifies fictional demo data and simulated roles without implying authentication', async () => {
