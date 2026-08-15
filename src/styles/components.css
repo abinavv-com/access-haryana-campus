@@ -973,6 +973,327 @@ fieldset label {
   margin-top: var(--space-3);
 }
 
+/* ---------- Barrier case file / repair brief ---------- */
+
+.case-file,
+.repair-brief {
+  min-width: 0;
+  overflow: hidden;
+  background: var(--paper-raised);
+  border: 1px solid var(--ink);
+  border-radius: var(--radius-feature);
+}
+
+.case-file__header,
+.repair-brief__header {
+  padding: clamp(1.75rem, 5vw, 4rem);
+  border-top: 6px solid var(--accent);
+  border-bottom: 1px solid var(--rule);
+}
+
+.case-file__folio,
+.repair-brief__folio {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-2);
+  color: var(--ink-muted);
+  font-size: var(--text-meta);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.case-file__folio p,
+.repair-brief__folio p {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.case-file__header h1,
+.repair-brief__header h1 {
+  max-width: 16ch;
+  margin: var(--space-2) 0 var(--space-3);
+  overflow-wrap: anywhere;
+  text-wrap: balance;
+}
+
+.case-file__status,
+.repair-brief__status {
+  display: flex;
+  align-items: baseline;
+  width: fit-content;
+  max-width: 100%;
+  margin: 0 0 var(--space-3);
+  border-block: 1px solid var(--ink);
+  text-transform: capitalize;
+}
+
+.case-file__status span,
+.repair-brief__status span {
+  padding: 0.45rem var(--space-2) 0.45rem 0;
+  color: var(--ink-muted);
+  font-size: var(--text-meta);
+  font-weight: 800;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.case-file__status strong,
+.repair-brief__status strong {
+  padding: 0.45rem 0 0.45rem var(--space-2);
+  border-left: 1px solid var(--ink);
+}
+
+.case-file__qualification,
+.repair-brief__qualification {
+  max-width: 64ch;
+  margin: 0;
+  color: var(--ink-muted);
+  font-family: var(--font-display);
+  font-size: clamp(1.1rem, 1.6vw, 1.35rem);
+  line-height: 1.5;
+  text-wrap: pretty;
+}
+
+.case-file__provenance {
+  max-width: 84ch;
+  margin: var(--space-3) 0 0;
+  overflow-wrap: anywhere;
+}
+
+.case-file__alert {
+  margin: var(--space-3) clamp(1.25rem, 4vw, 3rem) 0;
+}
+
+.case-file__body {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(18rem, 0.75fr);
+}
+
+.case-file__evidence,
+.case-file__decisions,
+.repair-brief__assignment {
+  min-width: 0;
+  padding: clamp(1.5rem, 4vw, 3rem);
+}
+
+.case-file__decisions {
+  display: grid;
+  align-content: start;
+  gap: var(--space-3);
+  background: var(--paper);
+  border-left: 1px solid var(--rule);
+}
+
+.record-marker {
+  margin: 0 0 var(--space-1);
+  color: var(--accent-ink);
+  font-size: var(--text-meta);
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.case-file__evidence h2,
+.decision-annotation h2,
+.alternative-decision h2,
+.hazard-control h2,
+.repair-brief__assignment h2,
+.repair-evidence h2 {
+  margin-top: 0;
+}
+
+.case-file__facts,
+.repair-brief__ledger {
+  display: grid;
+  margin: var(--space-3) 0;
+  border-top: 1px solid var(--rule);
+}
+
+.case-file__facts div,
+.repair-brief__ledger div {
+  display: grid;
+  grid-template-columns: minmax(7rem, 0.4fr) minmax(0, 1fr);
+  gap: var(--space-2);
+  padding: var(--space-1) 0;
+  border-bottom: 1px solid var(--rule);
+}
+
+.case-file__facts dt,
+.repair-brief__ledger dt {
+  color: var(--ink-muted);
+  font-size: var(--text-meta);
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.case-file__facts dd,
+.repair-brief__ledger dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.case-file__description {
+  max-width: 64ch;
+  color: var(--ink-muted);
+  line-height: 1.65;
+}
+
+.decision-annotation,
+.alternative-decision,
+.hazard-control {
+  min-width: 0;
+  padding: var(--space-3);
+  background: var(--paper-raised);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-panel);
+}
+
+.decision-annotation {
+  border-top: 5px solid var(--accent);
+}
+
+.decision-annotation__calculation {
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--rule);
+  font-family: var(--font-display);
+  font-size: var(--text-body-lg);
+  line-height: 1.55;
+}
+
+.decision-annotation__gate + .decision-annotation__gate {
+  margin-top: var(--space-3);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--rule);
+}
+
+.decision-annotation__gate h3 {
+  margin-bottom: var(--space-1);
+  font-size: var(--text-subheading);
+}
+
+.priority-override-fields {
+  display: grid;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+}
+
+.decision-annotation .field-stack {
+  max-width: none;
+}
+
+.alternative-decision {
+  border-left: 5px solid var(--warning);
+}
+
+.hazard-control {
+  border-left: 5px solid var(--danger);
+}
+
+.repair-brief__barrier {
+  max-width: 72ch;
+  color: var(--ink-muted);
+  overflow-wrap: anywhere;
+}
+
+.repair-brief__form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 var(--space-4);
+  padding: clamp(1.5rem, 4vw, 3rem);
+}
+
+.repair-brief__group {
+  display: grid;
+  align-content: start;
+  gap: var(--space-3);
+  min-width: 0;
+  margin: 0;
+  padding: var(--space-3) 0 0;
+  border: 0;
+  border-top: 1px solid var(--ink);
+}
+
+.repair-brief__group legend {
+  padding: 0 var(--space-2) 0 0;
+  font-family: var(--font-display);
+  font-size: var(--text-heading);
+  font-weight: 700;
+}
+
+.repair-brief__instruction {
+  max-width: 52ch;
+  margin: 0;
+  color: var(--ink-muted);
+}
+
+.repair-brief__group .field-stack {
+  max-width: none;
+}
+
+.repair-brief__submit {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--rule);
+}
+
+.repair-brief__submit p {
+  max-width: 60ch;
+  margin: 0;
+  color: var(--ink-muted);
+}
+
+.repair-brief__ledger {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 var(--space-4);
+}
+
+.repair-evidence {
+  margin-top: var(--space-5);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--ink);
+}
+
+.repair-evidence__qualification {
+  max-width: 72ch;
+  padding: var(--space-2);
+  background: var(--warning-tint);
+  border-left: 4px solid var(--warning);
+  border-radius: var(--radius-control);
+  line-height: 1.55;
+}
+
+.repair-evidence__plates {
+  margin: var(--space-3) 0;
+}
+
+.repair-evidence__plates > article {
+  min-width: 0;
+}
+
+.handoff-notice {
+  margin: 0 clamp(1.5rem, 4vw, 3rem) clamp(1.5rem, 4vw, 3rem);
+  padding: var(--space-3);
+  background: var(--info-tint);
+  border: 1px solid var(--info);
+  border-left-width: 5px;
+  border-radius: var(--radius-panel);
+}
+
+.handoff-notice h2 {
+  margin-top: var(--space-1);
+}
+
+.handoff-notice p:not(.eyebrow) {
+  max-width: 72ch;
+}
+
 /* ---------- Case chronology: a ruled record of attributed transitions ---------- */
 
 .case-chronology,
@@ -1349,6 +1670,15 @@ fieldset label {
     grid-template-columns: 1fr;
   }
 
+  .case-file__body {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .case-file__decisions {
+    border-top: 1px solid var(--rule);
+    border-left: 0;
+  }
+
   .work-fields {
     display: block;
   }
@@ -1378,6 +1708,21 @@ fieldset label {
     grid-template-columns: minmax(0, 1fr);
   }
 
+  .repair-brief__form-grid,
+  .repair-brief__ledger {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .repair-brief__submit {
+    grid-column: auto;
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .repair-brief__submit .button-primary {
+    align-self: start;
+  }
+
   .worksheet-evidence {
     grid-row: auto;
   }
@@ -1397,6 +1742,29 @@ fieldset label {
 }
 
 @media (max-width: 460px) {
+  .case-file__folio,
+  .repair-brief__folio {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .case-file__facts div,
+  .repair-brief__ledger div {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-0);
+  }
+
+  .case-file__status,
+  .repair-brief__status {
+    width: 100%;
+  }
+
+  .decision-annotation .action-row,
+  .decision-annotation .action-row button,
+  .handoff-notice .button-primary {
+    width: 100%;
+  }
+
   .journey-context dl,
   .finding-list article {
     grid-template-columns: minmax(0, 1fr);
@@ -1419,8 +1787,22 @@ fieldset label {
 
 html[data-text-size="large"] .overview-ledger,
 html[data-text-size="large"] .audit-worksheet__body,
-html[data-text-size="large"] .journey-strip {
+html[data-text-size="large"] .journey-strip,
+html[data-text-size="large"] .case-file__body,
+html[data-text-size="large"] .repair-brief__form-grid,
+html[data-text-size="large"] .repair-brief__ledger {
   grid-template-columns: minmax(0, 1fr);
+}
+
+html[data-text-size="large"] .case-file__decisions {
+  border-top: 1px solid var(--rule);
+  border-left: 0;
+}
+
+html[data-text-size="large"] .repair-brief__submit {
+  grid-column: auto;
+  align-items: stretch;
+  flex-direction: column;
 }
 
 html[data-text-size="large"] .worksheet-evidence {

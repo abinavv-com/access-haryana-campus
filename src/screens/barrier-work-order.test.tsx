@@ -12,6 +12,16 @@ function BarrierHarness() {
   return <BarrierScreen state={state} dispatch={dispatch} barrierId={fixtureIds.primaryBarrier} navigate={() => undefined} />
 }
 
+test('presents the barrier record as a case file', () => {
+  render(<BarrierHarness />)
+  expect(screen.getByRole('heading', { name: /landing narrowed by stored materials/i }).closest('article')).toHaveClass('case-file')
+})
+
+test('presents the priority calculation as a decision annotation', () => {
+  render(<BarrierHarness />)
+  expect(screen.getByText(/score .*severity.*essential service.*alternative route.*affected journey.*urgency/i).closest('section')).toHaveClass('decision-annotation')
+})
+
 test('records designated reviewer provenance, hazard control and an immutable validation timeline', async () => {
   const user = userEvent.setup()
   render(<BarrierHarness />)
@@ -48,6 +58,11 @@ function WorkOrderHarness() {
   const [state, dispatch] = useReducer(demoReducer, initial)
   return <WorkOrderScreen state={state} dispatch={dispatch} barrierId={fixtureIds.primaryBarrier} />
 }
+
+test('presents the repair work order as a repair brief', () => {
+  render(<WorkOrderHarness />)
+  expect(screen.getByRole('heading', { name: /repair work order/i }).closest('form')).toHaveClass('repair-brief')
+})
 
 test('validates every assignment field, focuses errors and preserves entered work order values', async () => {
   const user = userEvent.setup()
