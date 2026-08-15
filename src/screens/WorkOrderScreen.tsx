@@ -26,6 +26,21 @@ export function WorkOrderScreen({ state, dispatch, barrierId, navigate = () => {
   if (!barrier) return <section><h1>Barrier not found</h1></section>
   const barrierStatus = barrier.status
   const events = state.activity.filter(item => item.barrierId === barrierId)
+  const canAssign = !workOrder && barrierStatus === 'prioritised'
+  const assignmentPrerequisite = barrierStatus === 'observed'
+    ? {
+        heading: 'Validation and priority required',
+        guidance: 'This barrier is still observed. Complete designated validation and record a priority decision on the barrier case file before creating a repair work order.',
+      }
+    : barrierStatus === 'validated'
+      ? {
+          heading: 'Priority decision required',
+          guidance: 'This barrier is validated but not prioritised. Record a priority decision on the barrier case file before creating a repair work order.',
+        }
+      : {
+          heading: `Assignment unavailable from ${barrierStatus.replaceAll('_', ' ')}`,
+          guidance: `A new work order cannot be created while this barrier is ${barrierStatus.replaceAll('_', ' ')}. Return to the barrier case file to review the legal next action.`,
+        }
 
   function create() {
     const nextErrors = validateWorkOrder({ barrierStatus, ownerRole: owner, remedy, costBand, dueDate })
@@ -72,7 +87,7 @@ export function WorkOrderScreen({ state, dispatch, barrierId, navigate = () => {
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    if (!workOrder) create()
+    if (canAssign) create()
   }
 
   return <div className="screen-stack work-order-screen">
@@ -90,7 +105,7 @@ export function WorkOrderScreen({ state, dispatch, barrierId, navigate = () => {
 
       <ErrorSummary errors={errors} />
 
-      {!workOrder ? <div className="repair-brief__form-grid">
+      {canAssign ? <div className="repair-brief__form-grid">
         <fieldset className="repair-brief__group">
           <legend>Responsibility and remedy</legend>
           <p className="repair-brief__instruction">Name the accountable delivery role and the specific physical remedy.</p>
@@ -109,7 +124,12 @@ export function WorkOrderScreen({ state, dispatch, barrierId, navigate = () => {
           <p>Assignment authorises repair work only. The repair owner cannot independently verify the outcome.</p>
           <button className="button-primary" type="submit">Create work order</button>
         </div>
-      </div> : <section className="repair-brief__assignment" aria-labelledby="assigned-work-heading">
+      </div> : !workOrder ? <section className="repair-brief__prerequisite" aria-labelledby="assignment-prerequisite-heading">
+        <p className="record-marker" aria-hidden="true">01 / lifecycle prerequisite</p>
+        <h2 id="assignment-prerequisite-heading">{assignmentPrerequisite.heading}</h2>
+        <p>{assignmentPrerequisite.guidance}</p>
+        <button type="button" onClick={() => navigate(`/barriers/${barrier.id}`)}>Return to barrier case file</button>
+      </section> : <section className="repair-brief__assignment" aria-labelledby="assigned-work-heading">
         <p className="record-marker" aria-hidden="true">01 / authorised assignment</p>
         <h2 id="assigned-work-heading">Assigned work</h2>
         <dl className="repair-brief__ledger">
@@ -143,7 +163,7 @@ export function WorkOrderScreen({ state, dispatch, barrierId, navigate = () => {
         {barrier.status === 'awaiting_verification' ? <>
           <p><strong>Repair evidence submitted — awaiting verification.</strong> This does not mean verified complete. A verifier independent from the repair owner must conduct a bounded journey retest.</p>
           <button className="button-primary" type="button" onClick={() => navigate(`/verification/${barrier.id}`)}>Continue to independent verification</button>
-        </> : workOrder ? <p>The repair owner remains responsible for evidence submission. A different role must make the later verification decision.</p> : <p>Creating this brief records responsibility, remedy, cost and timing. It does not certify that a repair is complete or suitable for every person or journey.</p>}
+        </> : workOrder ? <p>The repair owner remains responsible for evidence submission. A different role must make the later verification decision.</p> : canAssign ? <p>Creating this brief records responsibility, remedy, cost and timing. It does not certify that a repair is complete or suitable for every person or journey.</p> : <p><strong>Current state: {barrierStatus.replaceAll('_', ' ')}.</strong> {assignmentPrerequisite.guidance}</p>}
       </aside>
     </form>
     <ActivityTimeline events={events} />

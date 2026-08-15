@@ -1,5 +1,5 @@
 import { useReducer } from 'react'
-import { render, screen } from '@testing-library/react'
+import { fireEvent, render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { expect, test } from 'vitest'
 import { createDemoFixture, fixtureIds } from '../data/demo-fixture.v1'
@@ -62,6 +62,23 @@ function WorkOrderHarness() {
 test('presents the repair work order as a repair brief', () => {
   render(<WorkOrderHarness />)
   expect(screen.getByRole('heading', { name: /repair work order/i }).closest('form')).toHaveClass('repair-brief')
+})
+
+test('blocks direct assignment from a validated barrier and explains the priority prerequisite', () => {
+  const state = createDemoFixture()
+  state.barriers[0].status = 'validated'
+  const dispatched: unknown[] = []
+  render(<WorkOrderScreen state={state} dispatch={action => dispatched.push(action)} barrierId={fixtureIds.primaryBarrier} />)
+
+  const form = screen.getByRole('heading', { name: /repair work order/i }).closest('form')
+  expect(form).not.toBeNull()
+  fireEvent.submit(form!)
+
+  expect(dispatched).toEqual([])
+  expect(screen.queryByRole('button', { name: /create work order/i })).not.toBeInTheDocument()
+  const prerequisite = screen.getByRole('heading', { name: /priority decision required/i }).closest('section')
+  expect(prerequisite).not.toBeNull()
+  expect(within(prerequisite!).getByText(/validated but not prioritised.*record a priority decision/i)).toBeInTheDocument()
 })
 
 test('validates every assignment field, focuses errors and preserves entered work order values', async () => {
