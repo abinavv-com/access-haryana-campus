@@ -22,9 +22,9 @@
 - Verified that print CSS removes application chrome and keeps the evidence summary within an A4-oriented layout.
 - No backend, personal diagnosis, authentication or statutory determination was introduced.
 
-## Post-plan update (2026-08-14)
+## Post-plan updates (2026-08-14 to 2026-08-15)
 
-- The verifier records before/after journey completion and times; impact metrics skip any record without those measurements.
-- Verification uses the actual action time through an injectable clock, keeping the live elapsed-days metric honest while tests remain deterministic.
-- Cost-band parsing supports currency symbols on both bounds, so the illustrative pilot spend is derived as the midpoint rather than silently reading zero.
-- Print rules load last through the application entry point and use normal cascade order without `!important`. The regenerated PDF remains one A4 page.
+- The verifier records before/after journey success (boolean checkbox) and completion times (number inputs); impact metrics skip any record lacking both measurements, ensuring all reported figures are grounded in recorded data.
+- Verification uses the actual action time through an injectable clock, keeping the live elapsed-days metric honest while tests remain deterministic with a fixed `2026-08-15T10:00:00.000Z` timestamp.
+- Cost-band text is parsed by extracting all digit groups, removing commas, and taking the midpoint of the first two figures. This handles ranges like `₹10,000–₹25,000` or `₹25,000` (single figure) without silent failure.
+- Print rules are imported at the end of the CSS cascade in `main.tsx` after all other stylesheets, so normal cascade order applies without `!important`. The one-page A4 layout is verified in `verification/task-10/impact-print.pdf`.

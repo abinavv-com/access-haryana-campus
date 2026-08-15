@@ -20,11 +20,12 @@
 - Reviewer identity is explicit in the immutable validation event reason while retaining the existing broad `facilities` perspective type.
 - No independent-verification or impact-report behavior from Task 9 is included.
 
-## Post-plan update (2026-08-14)
+## Post-plan updates (2026-08-14 to 2026-08-15)
 
 - The assigned work order preserves the user's controlled owner, remedy, cost band and due date through the repair-evidence transition.
-- Every barrier now displays the standards/guideline provenance that informed its screening check.
-- The visual pass keeps lifecycle state textual and moves narrow status pills to their own row, preventing mid-word breaks.
+- Every barrier now displays the standards/guideline provenance that informed its screening check, citing source, year, and section.
+- The Superdesign visual pass locked all styling. The lifecycle rail's status badges were moved to their own grid row to prevent text breaks (e.g. "Obser ved") in the narrow 280px space.
+- App state persists to localStorage after each transition, so navigation away and back resumes from the saved point.
 
 ## Remaining schema constraint
 

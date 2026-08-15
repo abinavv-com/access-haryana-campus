@@ -42,6 +42,18 @@ Recorded immediately before commit:
 - `npm run build` — exit 0; TypeScript and Vite production build completed, 40 modules transformed.
 - `git diff --check` — exit 0.
 
+## Post-plan verification (2026-08-15)
+
+After implementation of defect fixes listed in `HANDOFF.md`:
+
+1. **Fabricated measurements eliminated.** Verifications without before/after outcomes no longer generate default records. The impact report now skips such records entirely, ensuring all reported metrics are grounded in recorded data.
+2. **Verifier can enter journey times.** The VerificationScreen now has two `<input type="number">` fields for before and after minutes, plus a checkbox for whether the pre-repair journey was successful. Values no longer default to 12/7.
+3. **Demo state persists.** `App.tsx` calls `saveDemoState(state)` in a `useEffect` after every reducer dispatch. The presenter-journey test asserts this by reading localStorage and confirming a verified barrier exists.
+4. **Pilot spend no longer reads zero.** Cost bands like `₹10,000–₹25,000` are parsed by extracting digit groups and taking their midpoint, yielding `17500`.
+5. **Lifecycle rail follows current case.** The LifecycleRail reads `barrier.status` and maps it to a progress index. It no longer resets to barriers[0].
+6. **Text breaks fixed in rail.** StatusBadges in the lifecycle rail sit on `grid-column: 2` (their own row) to prevent mid-word breaks in the 280px rail content area.
+7. **Sticky header no longer clips headings.** Route navigation focuses `#main-content` (the main element), which now has `scroll-margin-top: var(--space-3)` so the sticky navigation bar does not overlap the page top. Headings retain their own `scroll-margin-top` (140px in base.css) for when they are individually linked or focused.
+
 ## Scope and remaining concerns
 
 The implementation changes remain integration/accessibility focused: route-aware lifecycle state, one continuation control, route focus management, and print-only layout. Domain transitions and qualification language are unchanged. Timing is an agent-driven keyboard run, not an unfamiliar human-presenter study. The 200% check uses standards-supported CSS page zoom plus a separate 390px reflow check because the installed headless CLI does not expose browser zoom level directly.

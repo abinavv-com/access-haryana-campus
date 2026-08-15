@@ -23,11 +23,12 @@
 - Validation moves focus to the error summary, controls are natively keyboard operable, and status is communicated in text.
 - Scope is limited to Overview and Guided Audit; the post-submit URL is prepared for Task 8 without implementing that screen.
 
-## Post-plan update (2026-08-14)
+## Post-plan updates (2026-08-14 to 2026-08-15)
 
-- Navigation now uses real entity routes throughout the primary journey, and the lifecycle rail follows the furthest-advanced case away from an entity route.
-- App state is saved after every reducer change, so a refresh preserves the created audit and current presenter stage.
-- The Superdesign visual pass and current screenshots supersede the original task-level appearance.
+- Navigation now uses real entity routes throughout the primary journey, and the lifecycle rail follows the furthest-advanced case by reading the barrier's status field.
+- App state is saved to localStorage after every reducer change, so a refresh preserves the created audit and current presenter stage without loss.
+- Every barrier screen displays the guidelines and screening check that informed its recorded observation, citing source, year, and section.
+- The Superdesign visual pass locked all typography, spacing, colour and component rules in `.superdesign/design-system.md`. This is the durable source for visual specifications.
 
 ## Resolved original concern
 
