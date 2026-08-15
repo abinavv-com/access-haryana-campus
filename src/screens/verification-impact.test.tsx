@@ -37,7 +37,20 @@ test('uses the editorial verification and impact report compositions', () => {
   state.barriers[0].status = 'verified'
   render(<ImpactScreen state={state} navigate={() => undefined} />)
   expect(screen.getByRole('heading', { level: 1, name: /bounded verified outcomes/i }).closest('section')).toHaveClass('impact-cover')
+  expect(screen.getByRole('heading', { level: 2, name: /what the bounded retests show/i }).closest('section')).toHaveClass('metric-composition')
   expect(screen.getByRole('heading', { level: 2, name: /traceable outcomes/i }).closest('section')).toHaveClass('source-ledger')
+})
+
+test('keeps large-text metrics single-column and lets print rules compact impact sections', () => {
+  const css = readFileSync(resolve('src/styles/components.css'), 'utf8')
+  expect(css).toMatch(/html\[data-text-size="large"\] \.metric-grid > \.report-metric\s*\{[^}]*grid-column:\s*auto/s)
+  expect(css).toMatch(/html\[data-text-size="large"\] \.metric-grid > \.report-metric:nth-child\(7\)\s*\{[^}]*display:\s*block/s)
+  expect(css).toMatch(/html\[data-text-size="large"\] \.metric-grid > \.report-metric:nth-child\(7\) > \*\s*\{[^}]*grid-column:\s*auto/s)
+
+  expect(css).toMatch(/@media screen\s*\{[^}]*\.impact-report > \.impact-cover/s)
+  expect(css).toMatch(/\.impact-report > \.metric-composition,\s*\.impact-report > \.source-ledger/s)
+  const impactRulesWithImportant = css.match(/[^{}]*(?:\.impact-cover|\.metric-composition|\.source-ledger)[^{}]*\{[^{}]*!important[^{}]*\}/g) ?? []
+  expect(impactRulesWithImportant).toEqual([])
 })
 
 test('asks for voluntary consent without requesting a diagnosis and identifies the independent verifier boundary', () => {
@@ -122,6 +135,8 @@ test('reports only accepted verified records with source links and a qualified p
   const state = awaitingState()
   state.barriers[0].status = 'verified'
   state.verifications.push({ id: 'verification-primary', barrierId: fixtureIds.primaryBarrier, workOrderId: 'work-order-primary', dataLabel: illustrativeDataLabel, decision: 'accepted', definedTestConditions: 'Dry daylight journey from main gate to admissions using a manual wheelchair.', beforeOutcome: { succeeded: false, completionMinutes: 12 }, afterOutcome: { succeeded: true, completionMinutes: 7 }, feedback: 'Journey completed.', timestamp: '2026-08-15T10:00:00.000Z' })
+  state.verifications.push({ id: 'verification-missing-outcome', barrierId: fixtureIds.primaryBarrier, workOrderId: 'work-order-primary', dataLabel: illustrativeDataLabel, decision: 'accepted', definedTestConditions: 'An incomplete record with no before or retest outcome.', feedback: 'Outcome fields were not recorded.', timestamp: '2026-08-15T11:00:00.000Z' })
+  state.activity.push({ id: 'activity-verified-primary', barrierId: fixtureIds.primaryBarrier, dataLabel: illustrativeDataLabel, actorPerspective: 'verifier', fromStatus: 'awaiting_verification', toStatus: 'verified', reason: 'Accepted for the recorded journey and test conditions.', timestamp: '2026-08-15T10:00:00.000Z' })
   state.workOrders.push({ id: 'work-order-unverified', barrierId: fixtureIds.rampBarrier, dataLabel: illustrativeDataLabel, ownerRole: 'Estates', remedy: 'Review ramp', costBand: '₹25,000', dueDate: '2026-08-25', repairEvidence: [] })
   const print = vi.spyOn(window, 'print').mockImplementation(() => undefined)
   const user = userEvent.setup()
@@ -135,7 +150,10 @@ test('reports only accepted verified records with source links and a qualified p
   expect(screen.getByText('5 days', { selector: '.metric-value' })).toBeInTheDocument()
   expect(screen.getByRole('link', { name: /barrier-obstructed-landing/i })).toBeInTheDocument()
   expect(screen.getByRole('link', { name: /work-order-primary/i })).toBeInTheDocument()
+  expect(screen.getByText(/repair-after/i)).toBeInTheDocument()
   expect(screen.getByText(/verification-primary/i)).toBeInTheDocument()
+  expect(screen.getByText(/activity-verified-primary/i)).toBeInTheDocument()
+  expect(screen.queryByText(/verification-missing-outcome/i)).not.toBeInTheDocument()
   expect(screen.queryByText(/work-order-unverified/i)).not.toBeInTheDocument()
   expect(screen.getAllByText(/illustrative demo data/i).length).toBeGreaterThan(0)
   expect(screen.getByText(/bounded retest.*not.*certification.*legal compliance/i)).toBeInTheDocument()

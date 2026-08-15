@@ -9,7 +9,7 @@ function extractSpend(costBand: string): number {
   return (figures[0] + (figures[1] ?? figures[0])) / 2
 }
 
-function buildImpactRecords(state: DemoState): ImpactRecord[] {
+function buildQualifiedEvidenceChains(state: DemoState) {
   return state.verifications.flatMap(verification => {
     const barrier = state.barriers.find(item => item.id === verification.barrierId && item.status === 'verified')
     const workOrder = state.workOrders.find(item => item.id === verification.workOrderId && item.barrierId === barrier?.id)
@@ -18,7 +18,7 @@ function buildImpactRecords(state: DemoState): ImpactRecord[] {
     const repairStart = new Date(workOrder.repairEvidence[0]?.capturedAt || verification.timestamp).getTime()
     const verificationTime = new Date(verification.timestamp).getTime()
     const repairDays = Math.round((verificationTime - repairStart) / (1000 * 60 * 60 * 24))
-    return [{
+    const record: ImpactRecord = {
       barrierId: barrier.id,
       workOrderId: workOrder.id,
       verificationId: verification.id,
@@ -31,19 +31,16 @@ function buildImpactRecords(state: DemoState): ImpactRecord[] {
       spend: extractSpend(workOrder.costBand),
       observedAt: barrier.observedAt,
       verifiedAt: verification.timestamp,
-    }]
+    }
+    return [{ record, verification, barrier, workOrder }]
   })
 }
 
 export function ImpactScreen({ state, navigate }: { state: DemoState; navigate: (path: string) => void }) {
-  const records = buildImpactRecords(state)
+  const qualifiedEvidenceChains = buildQualifiedEvidenceChains(state)
+  const records = qualifiedEvidenceChains.map(chain => chain.record)
   const impact = calculateImpact(records)
   const averageDaysFromObservation = calculateAverageDaysFromObservation(records)
-  const verified = state.verifications.flatMap(verification => {
-    const barrier = state.barriers.find(item => item.id === verification.barrierId && item.status === 'verified')
-    const workOrder = state.workOrders.find(item => item.id === verification.workOrderId && item.barrierId === barrier?.id)
-    return verification.decision === 'accepted' && barrier && workOrder?.repairEvidence.length ? [{ verification, barrier, workOrder }] : []
-  })
 
   return <div className="screen-stack impact-report">
     <section className="hero-panel impact-cover">
@@ -76,7 +73,7 @@ export function ImpactScreen({ state, navigate }: { state: DemoState; navigate: 
 
     <section className="source-ledger" aria-labelledby="source-ledger-title">
       <header className="source-ledger__heading"><p className="worksheet-step">Source ledger</p><h2 id="source-ledger-title">Traceable outcomes</h2><p>Every reported outcome resolves back through the barrier, repair instruction, evidence, independent verification and recorded transition.</p></header>
-      {verified.length === 0 ? <p className="source-ledger__empty">No accepted verified repairs yet. Awaiting-verification and rework records are excluded.</p> : verified.map(({ barrier, workOrder, verification }, index) => <article className="trace-record" key={verification.id}>
+      {qualifiedEvidenceChains.length === 0 ? <p className="source-ledger__empty">No accepted verified repairs yet. Awaiting-verification, rework and missing-outcome records are excluded.</p> : qualifiedEvidenceChains.map(({ barrier, workOrder, verification }, index) => <article className="trace-record" key={verification.id}>
         <div className="trace-record__summary"><p className="trace-record__number" aria-hidden="true">{String(index + 1).padStart(2, '0')}</p><p className="eyebrow">Verified repair for this journey and test conditions</p><h3>{barrier.title}</h3><p>{verification.definedTestConditions}</p></div>
         <dl>
           <div><dt>Barrier</dt><dd><a href={`/barriers/${barrier.id}`} onClick={event => { event.preventDefault(); navigate(`/barriers/${barrier.id}`) }}>{barrier.id}</a></dd></div>
