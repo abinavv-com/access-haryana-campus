@@ -1,9 +1,14 @@
 import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { readFileSync } from 'node:fs'
 import { beforeEach, describe, expect, test, vi } from 'vitest'
 import { App } from './App'
 import { DEMO_STORAGE_KEY, saveDemoState } from '../data/storage'
 import { createDemoFixture, fixtureIds } from '../data/demo-fixture.v1'
+
+const documentStyles = document.createElement('style')
+documentStyles.textContent = `${readFileSync('src/styles/tokens.css', 'utf8')}\n${readFileSync('src/styles/base.css', 'utf8')}`
+document.head.append(documentStyles)
 
 describe('accessible application shell', () => {
   beforeEach(() => {
@@ -67,6 +72,16 @@ describe('accessible application shell', () => {
     expect(document.documentElement).toHaveAttribute('data-text-size', 'large')
     expect(document.documentElement).toHaveAttribute('data-high-contrast', 'true')
     expect(localStorage.getItem('access-haryana-campus.preferences')).toContain('"highContrast":true')
+  })
+
+  test('keeps editorial preferences on the document root', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+    await user.click(screen.getByRole('button', { name: /increase text size/i }))
+    await user.click(screen.getByRole('checkbox', { name: /reduce motion/i }))
+    expect(document.documentElement).toHaveAttribute('data-text-size', 'large')
+    expect(document.documentElement).toHaveAttribute('data-reduced-motion', 'true')
+    expect(document.documentElement).toHaveStyle({ colorScheme: 'light' })
   })
 
   test('requires confirmation before reset and allows cancellation', async () => {

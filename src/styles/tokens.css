@@ -2,33 +2,37 @@
    Source of truth: .superdesign/design-system.md */
 :root {
   /* Colour roles */
-  --canvas: #f3f1ea;
-  --ink: #101820;
-  --surface: #ffffff;
-  --muted: #e8e5dc;
-  --accent: #d85a1a;
-  --accent-hover: #b94710;
-  --focus: #1261a0;
-  --verified: #176b45;
+  --paper: #eeeae1;
+  --paper-raised: #fffdf8;
+  --ink: #182123;
+  --ink-muted: #59605e;
+  --accent: #c95732;
+  --rule: #c9c2b6;
+  --canvas: var(--paper);
+  --surface: #f8f5ee;
+  --muted: var(--paper);
+  --accent-hover: #a84325;
+  --focus: #7a321e;
+  --verified: #2f6654;
   --warning: #9a6700;
   --danger: #b42318;
-  --info: #1261a0;
+  --info: #27566a;
 
   /* Ink at opacity, used for borders, dividers and secondary text */
-  --ink-05: rgba(16, 24, 32, 0.05);
-  --ink-10: rgba(16, 24, 32, 0.1);
-  --ink-15: rgba(16, 24, 32, 0.15);
-  --ink-30: rgba(16, 24, 32, 0.3);
-  --ink-60: rgba(16, 24, 32, 0.6);
-  --border: var(--ink-15);
+  --ink-05: rgba(24, 33, 35, 0.05);
+  --ink-10: rgba(24, 33, 35, 0.1);
+  --ink-15: rgba(24, 33, 35, 0.15);
+  --ink-30: rgba(24, 33, 35, 0.3);
+  --ink-60: rgba(24, 33, 35, 0.6);
+  --border: var(--rule);
   --border-strong: var(--ink);
 
   /* Surfaces tinted by status, kept low-saturation so text/icon still carries meaning */
-  --verified-tint: #e7f1eb;
+  --verified-tint: #e5eee8;
   --warning-tint: #f6efe0;
   --danger-tint: #fbe9e7;
-  --info-tint: #e7eff7;
-  --accent-tint: #fbe9de;
+  --info-tint: #e6eff0;
+  --accent-tint: #f7e5de;
 
   /* Spacing scale (existing --space-3 / --space-4 kept stable for callers) */
   --space-0: 0.25rem;
@@ -41,14 +45,17 @@
   --space-7: 4rem;
 
   /* Radii — 4-10px per spec */
-  --radius-sm: 4px;
-  --radius-md: 6px;
-  --radius-lg: 10px;
-  --radius: var(--radius-md);
+  --radius-feature: 24px;
+  --radius-panel: 16px;
+  --radius-control: 10px;
+  --radius-sm: var(--radius-control);
+  --radius-md: var(--radius-panel);
+  --radius-lg: var(--radius-feature);
+  --radius: var(--radius-panel);
 
   /* Elevation is minimal and functional, never decorative */
-  --shadow-sm: 0 1px 2px rgba(16, 24, 32, 0.08);
-  --shadow-md: 0 4px 12px rgba(16, 24, 32, 0.1);
+  --shadow-sm: 0 1px 2px rgba(24, 33, 35, 0.08);
+  --shadow-md: 0 4px 12px rgba(24, 33, 35, 0.1);
 
   /* Type scale, matching documented px sizes */
   --text-display: clamp(2.25rem, 4vw + 1rem, 4rem); /* 36-64px */
@@ -69,6 +76,9 @@
   --rail-width: 280px;
   --content-max: 1040px;
 
+  --font-display: Georgia, "Times New Roman", serif;
+  --font-interface: "Satoshi", Arial, Helvetica, sans-serif;
+
   font-variant-numeric: tabular-nums;
 }
 
@@ -78,10 +88,14 @@ html[data-text-size="large"] {
 }
 
 html[data-high-contrast="true"] {
+  --paper: #ffffff;
+  --paper-raised: #ffffff;
   --canvas: #ffffff;
   --ink: #000000;
+  --ink-muted: #000000;
   --surface: #ffffff;
   --muted: #ffffff;
+  --rule: #000000;
   --border: #000000;
   --border-strong: #000000;
   --accent: #a6390d;

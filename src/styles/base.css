@@ -9,13 +9,15 @@
 html {
   background: var(--canvas);
   color: var(--ink);
-  font-family: "Satoshi", Arial, Helvetica, sans-serif;
+  color-scheme: light;
+  font-family: var(--font-interface);
   font-size: 100%;
   -webkit-text-size-adjust: 100%;
 }
 
 body {
   margin: 0;
+  font-family: var(--font-interface);
   font-size: var(--text-body);
   line-height: 1.5;
   font-weight: 400;
@@ -34,7 +36,10 @@ button,
 select,
 input,
 textarea {
-  font: inherit;
+  font-family: var(--font-interface);
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: inherit;
   color: inherit;
 }
 
@@ -42,9 +47,11 @@ textarea {
 h1,
 h2,
 h3 {
+  font-family: var(--font-display);
   font-weight: 700;
   margin: 0 0 0.5em;
   letter-spacing: -0.02em;
+  text-wrap: balance;
 }
 
 h1 {
