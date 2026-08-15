@@ -33,7 +33,9 @@ describe('guided audit', () => {
     render(<Harness />)
     expect(screen.getByText(/Accessibility Guidelines and Standards for Higher Education Institutions and Universities/i)).toBeInTheDocument()
     expect(screen.getByText(/2024 · section 6\.2 · screening check/i)).toBeInTheDocument()
-    expect(screen.getByRole('img', { name: /illustrative example of tactile paving obstructed/i })).toBeInTheDocument()
+    const evidence = screen.getByRole('img', { name: /illustrative example of tactile paving obstructed/i })
+    expect(evidence).toBeInTheDocument()
+    expect(evidence.closest('figure')).toHaveClass('evidence-plate')
     expect(screen.getByText(/not a compliance determination/i)).toBeInTheDocument()
     expect(screen.getByText(/avoid identifiable people or personal data/i).closest('p')).toHaveTextContent(/fictional demo/i)
   })
@@ -43,8 +45,10 @@ describe('guided audit', () => {
     render(<Harness />)
     await user.click(screen.getByRole('checkbox', { name: /select illustrative obstruction photo/i }))
     await user.click(screen.getByRole('button', { name: /submit screening finding/i }))
-    expect(screen.getByRole('alert')).toHaveFocus()
-    expect(screen.getByRole('alert')).toHaveTextContent(/supporting evidence is required/i)
+    const errorBrief = screen.getByRole('alert')
+    expect(errorBrief).toHaveFocus()
+    expect(errorBrief).toHaveClass('error-brief')
+    expect(errorBrief).toHaveTextContent(/supporting evidence is required/i)
   })
 
   test('requires a reason when unable to measure and preserves it in the record and event', async () => {

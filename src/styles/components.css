@@ -387,8 +387,9 @@ button:active:not(:disabled),
   display: none;
 }
 
-/* ---------- Status badges (state must never be colour alone: each tone carries a glyph) ---------- */
+/* ---------- Record status: visible words carry state; the glyph is only a cue ---------- */
 
+.record-status,
 .status-badge {
   display: inline-flex;
   align-items: center;
@@ -399,6 +400,10 @@ button:active:not(:disabled),
   font-size: var(--text-meta);
   font-weight: 700;
   white-space: nowrap;
+}
+
+.record-status__label {
+  min-width: 0;
 }
 
 .status-badge--info {
@@ -587,16 +592,20 @@ fieldset label {
   gap: 0.5rem;
 }
 
-/* ---------- Evidence cards ---------- */
+/* ---------- Evidence plates: an annotated field record, not a media card ---------- */
 
+.evidence-plate,
 .evidence-card {
   margin: 0;
-  border: 1px solid var(--border);
+  border: 1px solid var(--rule);
+  border-top: 3px solid var(--ink);
   border-radius: var(--radius-md);
   overflow: hidden;
-  background: var(--surface);
+  background: var(--paper-raised);
 }
 
+.evidence-plate img,
+.evidence-plate [role="img"],
 .evidence-card img,
 .evidence-card [role="img"] {
   width: 100%;
@@ -605,6 +614,7 @@ fieldset label {
   background: var(--muted);
 }
 
+.evidence-plate [role="img"],
 .evidence-card [role="img"] {
   display: grid;
   place-items: center;
@@ -614,40 +624,63 @@ fieldset label {
   font-size: var(--text-meta-lg);
 }
 
+.evidence-plate figcaption,
 .evidence-card figcaption {
   display: grid;
-  gap: 0.15rem;
-  padding: var(--space-2);
-  border-top: 1px solid var(--border);
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.3rem var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border-top: 1px solid var(--rule);
   font-size: var(--text-meta-lg);
 }
 
+.evidence-plate figcaption strong,
 .evidence-card figcaption strong {
+  grid-column: 1 / -1;
   font-size: var(--text-meta);
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: var(--accent-ink);
 }
 
+.evidence-plate .provenance,
 .evidence-card .provenance {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  padding-top: 0.35rem;
+  border-top: 1px solid var(--ink-15);
   color: var(--ink-60);
   font-size: var(--text-meta);
 }
 
-/* ---------- Errors ---------- */
+.provenance-label {
+  color: var(--accent-ink);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
 
+/* ---------- Error brief ---------- */
+
+.error-brief,
 .error-summary {
+  position: relative;
   padding: var(--space-3);
-  border: 3px solid var(--danger);
+  border: 1px solid var(--danger);
+  border-left: 6px solid var(--danger);
   border-radius: var(--radius-md);
   background: var(--danger-tint);
 }
 
+.error-brief h2,
 .error-summary h2 {
   margin-top: 0;
   font-size: 1.15rem;
 }
 
+.error-brief ul,
 .error-summary ul {
   margin: 0.5em 0 0;
   padding-left: 1.25em;
@@ -714,26 +747,89 @@ fieldset label {
   margin-top: var(--space-3);
 }
 
+/* ---------- Case chronology: a ruled record of attributed transitions ---------- */
+
+.case-chronology,
 .activity-timeline {
   display: grid;
   gap: var(--space-2);
-  padding-left: var(--space-3);
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  counter-reset: chronology;
+}
+
+.case-chronology li,
+.activity-timeline li {
+  display: grid;
+  grid-template-columns: 2.4rem minmax(0, 1fr);
+  gap: var(--space-2);
+  padding: var(--space-2) 0;
+  border-top: 1px solid var(--rule);
+}
+
+.case-chronology li:last-child,
+.activity-timeline li:last-child {
+  border-bottom: 1px solid var(--rule);
+}
+
+.chronology-event__number {
+  color: var(--accent-ink);
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.chronology-event__body {
+  display: grid;
+  gap: 0.45rem;
+  min-width: 0;
+}
+
+.chronology-event__status,
+.chronology-event__reason {
   margin: 0;
 }
 
-.activity-timeline li {
-  display: grid;
-  gap: 0.2rem;
-  padding: 0.15rem 0 0.15rem var(--space-2);
-  border-left: 3px solid var(--accent);
-}
-
-.activity-timeline strong {
+.chronology-event__status {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.35rem;
   text-transform: capitalize;
 }
 
-.activity-timeline small {
+.chronology-event__status > span,
+.chronology-event__reason > span,
+.chronology-event__metadata dt {
   color: var(--ink-60);
+  font-size: var(--text-meta);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.chronology-event__reason > span {
+  margin-right: 0.35rem;
+}
+
+.chronology-event__metadata {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-3);
+  margin: 0;
+}
+
+.chronology-event__metadata div {
+  display: flex;
+  gap: 0.35rem;
+}
+
+.chronology-event__metadata dd {
+  margin: 0;
+  color: var(--ink-60);
+  font-size: var(--text-meta-lg);
 }
 
 .work-fields {
@@ -784,7 +880,7 @@ fieldset label {
   background: var(--danger-tint);
 }
 
-/* ---------- Metrics: number + plain-language explanation, tabular figures ---------- */
+/* ---------- Report metrics: a varied editorial measure set ---------- */
 
 .metric-grid {
   display: grid;
@@ -792,11 +888,27 @@ fieldset label {
   gap: var(--space-3);
 }
 
+.report-metric,
 .metric-card {
+  position: relative;
   padding: var(--space-3);
-  background: var(--surface);
-  border: 1px solid var(--border);
+  background: var(--paper-raised);
+  border: 1px solid var(--rule);
+  border-top: 3px solid var(--ink);
   border-radius: var(--radius-lg);
+}
+
+.metric-grid > .report-metric:nth-child(2n) {
+  border-top-color: var(--accent);
+}
+
+.metric-grid > .report-metric:nth-child(5) {
+  background: var(--accent-tint);
+  border-top-width: 5px;
+}
+
+.metric-grid > .report-metric:nth-child(5) .metric-value {
+  font-size: clamp(2.5rem, 4.5vw, 4rem);
 }
 
 .metric-value {
@@ -808,13 +920,20 @@ fieldset label {
   letter-spacing: -0.02em;
 }
 
+.report-metric p,
+.report-metric small,
 .metric-card p,
 .metric-card small {
   margin: 0.25rem 0;
 }
 
+.report-metric small,
 .metric-card small {
   color: var(--ink-60);
+}
+
+.report-metric__detail {
+  max-width: 30ch;
 }
 
 /* ---------- Traceability ---------- */

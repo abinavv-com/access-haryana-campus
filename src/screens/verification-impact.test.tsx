@@ -70,6 +70,31 @@ test('records the actual verification time through an injectable clock', async (
   }))
 })
 
+test('presents activity as an ordered, attributed chronology', () => {
+  const state = awaitingState()
+  const timestamp = '2026-08-16T14:30:00.000Z'
+  state.activity.push({
+    id: 'activity-awaiting-verification',
+    barrierId: fixtureIds.primaryBarrier,
+    dataLabel: illustrativeDataLabel,
+    actorPerspective: 'verifier',
+    fromStatus: 'assigned',
+    toStatus: 'awaiting_verification',
+    reason: 'Independent retest is ready to be scheduled.',
+    timestamp,
+  })
+
+  render(<VerificationScreen state={state} dispatch={() => undefined} barrierId={fixtureIds.primaryBarrier} navigate={() => undefined} />)
+
+  const event = screen.getByText(/independent retest is ready to be scheduled/i).closest('li')
+  expect(event?.closest('ol')).toHaveClass('case-chronology')
+  expect(event).toHaveTextContent(/status:\s*awaiting verification/i)
+  expect(event).toHaveTextContent(/reason:\s*independent retest is ready to be scheduled/i)
+  expect(event).toHaveTextContent(/actor:\s*verifier/i)
+  expect(event?.querySelector('time')).toHaveAttribute('dateTime', timestamp)
+  expect(event?.querySelector('time')).toHaveTextContent(new Date(timestamp).toLocaleString('en-IN'))
+})
+
 test('loads print rules after shared component rules without cascade overrides', () => {
   const main = readFileSync(resolve('src/main.tsx'), 'utf8')
   const impact = readFileSync(resolve('src/screens/ImpactScreen.tsx'), 'utf8')
@@ -90,7 +115,9 @@ test('reports only accepted verified records with source links and a qualified p
   expect(screen.getAllByText('1', { selector: '.metric-value' })).toHaveLength(2)
   expect(screen.getByText('0%', { selector: '.metric-value' })).toBeInTheDocument()
   expect(screen.getByText('100%', { selector: '.metric-value' })).toBeInTheDocument()
-  expect(screen.getByText('5 min', { selector: '.metric-value' })).toBeInTheDocument()
+  const timeSaved = screen.getByText('5 min', { selector: '.metric-value' })
+  expect(timeSaved).toBeInTheDocument()
+  expect(timeSaved.closest('article')).toHaveClass('report-metric')
   expect(screen.getByText('5 days', { selector: '.metric-value' })).toBeInTheDocument()
   expect(screen.getByRole('link', { name: /barrier-obstructed-landing/i })).toBeInTheDocument()
   expect(screen.getByRole('link', { name: /work-order-primary/i })).toBeInTheDocument()
