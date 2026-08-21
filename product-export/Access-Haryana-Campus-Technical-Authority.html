@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Access Haryana Campus — Technical Authority</title>
+    <style>
+        :root {
+            --color-ink: #101820;
+            --color-accent: #D85A1A;
+            --color-bg: #F3F1EA;
+            --color-white: #FFFFFF;
+            --color-meta: #666666;
+            --color-border: #E8E5DC;
+
+            --font-display: Georgia, 'Times New Roman', serif;
+            --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            --font-mono: 'Monaco', 'Courier New', monospace;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+        }
+
+        body {
+            font-family: var(--font-body);
+            line-height: 1.6;
+            color: var(--color-ink);
+            background-color: var(--color-bg);
+            overflow-x: hidden;
+        }
+
+        /* PRINT STYLES */
+        @media print {
+            body {
+                background-color: var(--color-white);
+            }
+            .page-break {
+                page-break-after: always;
+            }
+            .no-print {
+                display: none;
+            }
+            section {
+                page-break-inside: avoid;
+            }
+        }
+
+        /* HEADER / NAVIGATION */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: var(--color-white);
+            border-bottom: 1px solid var(--color-border);
+            padding: 16px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+            font-size: 13px;
+        }
+
+        .header-title {
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            color: var(--color-ink);
+        }
+
+        .header-link {
+            color: var(--color-accent);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        /* LAYOUT CONTAINER */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 40px;
+        }
+
+        /* TITLE PAGE */
+        .title-page {
+            min-height: 100vh;
+            display: grid;
+            grid-template-rows: auto 1fr auto;
+            align-items: center;
+            padding: 60px 40px;
+            background: linear-gradient(135deg, var(--color-white) 0%, rgba(243, 241, 234, 0.5) 100%);
+            border-bottom: 2px solid var(--color-accent);
+        }
+
+        .title-page h1 {
+            font-family: var(--font-display);
+            font-size: clamp(3rem, 6vw, 4.5rem);
+            line-height: 1.1;
+            margin-bottom: 16px;
+            color: var(--color-ink);
+            letter-spacing: -0.02em;
+        }
+
+        .title-page .subtitle {
+            font-size: 18px;
+            color: var(--color-meta);
+            font-weight: 400;
+            margin-bottom: 40px;
+            max-width: 600px;
+        }
+
+        .title-page .metadata {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
+            margin-bottom: 60px;
+            border-top: 1px solid var(--color-border);
+            padding-top: 40px;
+        }
+
+        .metadata-item {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .metadata-label {
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--color-meta);
+        }
+
+        .metadata-value {
+            font-size: 16px;
+            color: var(--color-ink);
+            font-weight: 500;
+        }
+
+        /* CTA BUTTON */
+        .cta-button {
+            display: inline-block;
+            background-color: var(--color-accent);
+            color: var(--color-white);
+            padding: 14px 32px;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            border: 2px solid var(--color-accent);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .cta-button:hover {
+            background-color: transparent;
+            color: var(--color-accent);
+        }
+
+        /* SECTION SPACING */
+        section {
+            padding: 80px 0;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        section:last-of-type {
+            border-bottom: none;
+        }
+
+        /* SECTION HEADING */
+        .section-number {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--color-accent);
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            margin-bottom: 12px;
+        }
+
+        section h2 {
+            font-family: var(--font-display);
+            font-size: clamp(2rem, 4vw, 3rem);
+            line-height: 1.2;
+            margin-bottom: 32px;
+            color: var(--color-ink);
+            letter-spacing: -0.01em;
+        }
+
+        section h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-top: 32px;
+            margin-bottom: 16px;
+            color: var(--color-ink);
+        }
+
+        section p {
+            font-size: 15px;
+            line-height: 1.8;
+            margin-bottom: 20px;
+            color: var(--color-ink);
+            max-width: 720px;
+        }
+
+        section ul, section ol {
+            margin: 20px 0 20px 24px;
+            list-style-position: outside;
+        }
+
+        section li {
+            margin-bottom: 12px;
+            line-height: 1.8;
+            font-size: 15px;
+        }
+
+        /* METRICS GRID */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 32px;
+            margin: 48px 0;
+        }
+
+        .metric-card {
+            background: var(--color-white);
+            padding: 28px;
+            border: 1px solid var(--color-border);
+            border-radius: 4px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .metric-label {
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--color-meta);
+        }
+
+        .metric-value {
+            font-family: var(--font-mono);
+            font-size: 28px;
+            font-weight: 600;
+            color: var(--color-accent);
+            line-height: 1;
+        }
+
+        .metric-description {
+            font-size: 13px;
+            color: var(--color-meta);
+            margin-top: 8px;
+        }
+
+        /* EVIDENCE CHAIN */
+        .evidence-chain {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 16px;
+            margin: 48px 0;
+        }
+
+        .chain-stage {
+            background: var(--color-white);
+            border: 2px solid var(--color-border);
+            border-radius: 4px;
+            padding: 24px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            position: relative;
+        }
+
+        .chain-stage.current {
+            border-color: var(--color-accent);
+            background: rgba(216, 90, 26, 0.05);
+        }
+
+        .chain-number {
+            font-family: var(--font-mono);
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--color-accent);
+        }
+
+        .chain-label {
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            color: var(--color-ink);
+        }
+
+        .chain-role {
+            font-size: 11px;
+            color: var(--color-meta);
+            font-style: italic;
+        }
+
+        /* FEATURE LIST */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            margin: 48px 0;
+        }
+
+        .feature-item {
+            display: flex;
+            gap: 16px;
+        }
+
+        .feature-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--color-accent);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--color-white);
+            font-weight: 600;
+            flex-shrink: 0;
+            font-family: var(--font-mono);
+        }
+
+        .feature-content h4 {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--color-ink);
+        }
+
+        .feature-content p {
+            font-size: 14px;
+            color: var(--color-meta);
+            margin: 0;
+        }
+
+        /* SCREENSHOT SECTION */
+        .screenshots-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 48px;
+            margin: 48px 0;
+        }
+
+        .screenshot-item {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .screenshot-item figure {
+            margin: 0;
+            border: 1px solid var(--color-border);
+            border-radius: 4px;
+            overflow: hidden;
+            background: var(--color-white);
+        }
+
+        .screenshot-item img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .screenshot-item figcaption {
+            font-size: 13px;
+            color: var(--color-meta);
+            font-style: italic;
+            padding: 0 4px;
+        }
+
+        /* TECH STACK */
+        .tech-stack {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 24px;
+            margin: 48px 0;
+        }
+
+        .tech-item {
+            background: var(--color-white);
+            padding: 20px;
+            border: 1px solid var(--color-border);
+            border-radius: 4px;
+        }
+
+        .tech-label {
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--color-accent);
+            margin-bottom: 8px;
+        }
+
+        .tech-value {
+            font-family: var(--font-mono);
+            font-size: 13px;
+            color: var(--color-ink);
+            line-height: 1.6;
+        }
+
+        /* DEPLOYMENT BANNER */
+        .deployment-banner {
+            background: linear-gradient(135deg, rgba(216, 90, 26, 0.1) 0%, rgba(243, 241, 234, 1) 100%);
+            border: 2px solid var(--color-accent);
+            border-radius: 4px;
+            padding: 40px;
+            margin: 48px 0;
+            text-align: center;
+        }
+
+        .deployment-banner h3 {
+            font-family: var(--font-display);
+            font-size: 24px;
+            margin-bottom: 16px;
+            margin-top: 0;
+        }
+
+        .deployment-banner .url {
+            font-family: var(--font-mono);
+            font-size: 16px;
+            color: var(--color-accent);
+            font-weight: 600;
+            margin-bottom: 24px;
+            word-break: break-all;
+        }
+
+        /* FOOTER */
+        footer {
+            background: var(--color-ink);
+            color: var(--color-white);
+            padding: 60px 40px;
+            text-align: center;
+            border-top: 2px solid var(--color-accent);
+        }
+
+        footer p {
+            font-size: 13px;
+            margin-bottom: 12px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        footer .footer-link {
+            color: var(--color-accent);
+            text-decoration: none;
+        }
+
+        footer .footer-link:hover {
+            text-decoration: underline;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 24px;
+            }
+
+            header {
+                padding: 12px 24px;
+                font-size: 12px;
+            }
+
+            section {
+                padding: 48px 0;
+            }
+
+            section h2 {
+                font-size: 24px;
+            }
+
+            .title-page {
+                padding: 40px 24px;
+            }
+
+            .title-page .metadata {
+                grid-template-columns: 1fr;
+                gap: 24px;
+            }
+
+            .evidence-chain {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+            }
+
+            .chain-stage {
+                padding: 16px;
+            }
+
+            .metrics-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* PAGE BREAK FOR PRINTING */
+        .print-break {
+            page-break-before: always;
+        }
+
+        /* FEATURE ICONS CONTENT */
+        .icon-check { content: '✓'; }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-title">Access Haryana Campus</div>
+        <a href="https://011-access-haryana-campus.vercel.app" class="header-link" target="_blank">View Live</a>
+    </header>
+
+    <!-- TITLE PAGE -->
+    <div class="title-page">
+        <div class="container" style="padding: 60px 40px 0;">
+            <h1>Access Haryana Campus</h1>
+            <p class="subtitle">Campus Accessibility Audit & Verification Platform</p>
+
+            <div class="metadata">
+                <div class="metadata-item">
+                    <div class="metadata-label">Release Date</div>
+                    <div class="metadata-value">August 2026</div>
+                </div>
+                <div class="metadata-item">
+                    <div class="metadata-label">Version</div>
+                    <div class="metadata-value">0.0.0</div>
+                </div>
+                <div class="metadata-item">
+                    <div class="metadata-label">Platform</div>
+                    <div class="metadata-value">Vercel</div>
+                </div>
+            </div>
+
+            <a href="https://011-access-haryana-campus.vercel.app" class="cta-button" target="_blank">View Live Application</a>
+        </div>
+    </div>
+
+    <!-- SECTION 1: PRODUCT OVERVIEW -->
+    <section>
+        <div class="container">
+            <div class="section-number">01 / Product Overview</div>
+            <h2>Evidence-Led Barrier Management</h2>
+
+            <p>Access Haryana Campus demonstrates an auditable, end-to-end workflow for managing campus accessibility improvements. The platform enables auditors, facilities teams, and accessibility verifiers to collaborate on identifying, prioritizing, and resolving accessibility barriers through a structured, traceable process.</p>
+
+            <h3>Core Capabilities</h3>
+            <div class="features-grid">
+                <div class="feature-item">
+                    <div class="feature-icon">01</div>
+                    <div class="feature-content">
+                        <h4>Barrier Discovery</h4>
+                        <p>Guided audit workflow identifying accessibility barriers with structured evidence capture.</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">02</div>
+                    <div class="feature-content">
+                        <h4>Prioritization</h4>
+                        <p>Systematic review and priority assignment based on impact and feasibility.</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">03</div>
+                    <div class="feature-content">
+                        <h4>Work Assignment</h4>
+                        <p>Facilities team management with resource allocation and timeline tracking.</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">04</div>
+                    <div class="feature-content">
+                        <h4>Evidence Collection</h4>
+                        <p>Before/after documentation with measurements and standards references.</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">05</div>
+                    <div class="feature-content">
+                        <h4>Independent Verification</h4>
+                        <p>Bounded retest by accessibility verifiers with outcomes recording.</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">06</div>
+                    <div class="feature-content">
+                        <h4>Impact Reporting</h4>
+                        <p>Comprehensive metrics on verified repairs and compliance outcomes.</p>
+                    </div>
+                </div>
+            </div>
+
+            <h3>The Evidence Chain</h3>
+            <div class="evidence-chain">
+                <div class="chain-stage current">
+                    <div class="chain-number">01</div>
+                    <div class="chain-label">Observed</div>
+                    <div class="chain-role">Auditor</div>
+                </div>
+                <div class="chain-stage">
+                    <div class="chain-number">02</div>
+                    <div class="chain-label">Validated</div>
+                    <div class="chain-role">Reviewer</div>
+                </div>
+                <div class="chain-stage">
+                    <div class="chain-number">03</div>
+                    <div class="chain-label">Prioritised</div>
+                    <div class="chain-role">Manager</div>
+                </div>
+                <div class="chain-stage">
+                    <div class="chain-number">04</div>
+                    <div class="chain-label">Assigned</div>
+                    <div class="chain-role">Facilities</div>
+                </div>
+                <div class="chain-stage">
+                    <div class="chain-number">05</div>
+                    <div class="chain-label">Fixed / Awaiting</div>
+                    <div class="chain-role">Repair Owner</div>
+                </div>
+                <div class="chain-stage">
+                    <div class="chain-number">06</div>
+                    <div class="chain-label">User Verified</div>
+                    <div class="chain-role">Verifier</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 2: USER JOURNEY -->
+    <section>
+        <div class="container">
+            <div class="section-number">02 / User Journey</div>
+            <h2>Six Screens, One Workflow</h2>
+
+            <p>The application guides users through a complete accessibility management cycle. Each screen represents a distinct role perspective and decision point in the barrier-to-fix workflow.</p>
+
+            <h3>Screen 1: Overview (Command Centre)</h3>
+            <p>Entry point displaying the current active journey, next actions, backlog of barriers, campus evidence, the evidence lifecycle rail, activity timeline, and role switcher.</p>
+
+            <h3>Screen 2: Guided Audit</h3>
+            <p>Progressive discovery of accessibility barriers with structured questionnaire, evidence capture, barrier description, and immediate impact assessment.</p>
+
+            <h3>Screen 3: Barrier Record</h3>
+            <p>Detailed barrier documentation with measurements, evidence images, standards references, and priority assignment for facilities team review.</p>
+
+            <h3>Screen 4: Work Order Management</h3>
+            <p>Facilities team interface for repair coordination including scope, resource allocation, timeline, and completion tracking.</p>
+
+            <h3>Screen 5: Verification</h3>
+            <p>Independent retest interface where verifiers confirm repairs meet audit criteria and record journey success rates.</p>
+
+            <h3>Screen 6: Impact Report</h3>
+            <p>Executive dashboard with verified repair count, journey success metrics, cost analysis, and exportable summary.</p>
+        </div>
+    </section>
+
+    <!-- SECTION 3: SCREENSHOTS -->
+    <section>
+        <div class="container">
+            <div class="section-number">03 / Application Screens</div>
+            <h2>Visual Walkthrough</h2>
+
+            <div class="screenshots-container">
+                <div class="screenshot-item">
+                    <figure>
+                        <img src="screenshots/01-homepage-overview.jpg" alt="Overview Screen: Campus Command Centre with evidence chain">
+                        <figcaption><strong>Screen 1: Overview (Command Centre)</strong> — Landing page showing evidence lifecycle rail, role selector, and next actions.</figcaption>
+                    </figure>
+                </div>
+
+                <div class="screenshot-item">
+                    <figure>
+                        <img src="screenshots/02-audit-screen.jpg" alt="Guided Audit workflow screen">
+                        <figcaption><strong>Screen 2: Guided Audit</strong> — Structured questionnaire for barrier discovery and evidence capture.</figcaption>
+                    </figure>
+                </div>
+
+                <div class="screenshot-item">
+                    <figure>
+                        <img src="screenshots/03-barrier-discovery.jpg" alt="Barrier Record screen with documentation">
+                        <figcaption><strong>Screen 3: Barrier Record</strong> — Detailed documentation with measurements and standards references.</figcaption>
+                    </figure>
+                </div>
+
+                <div class="screenshot-item">
+                    <figure>
+                        <img src="screenshots/04-work-order-assignment.jpg" alt="Work Order assignment interface">
+                        <figcaption><strong>Screen 4: Work Order</strong> — Facilities team interface for repair management and tracking.</figcaption>
+                    </figure>
+                </div>
+
+                <div class="screenshot-item">
+                    <figure>
+                        <img src="screenshots/05-verification-screen.jpg" alt="Verification testing screen">
+                        <figcaption><strong>Screen 5: Verification</strong> — Independent retest interface for verifying repairs.</figcaption>
+                    </figure>
+                </div>
+
+                <div class="screenshot-item">
+                    <figure>
+                        <img src="screenshots/06-impact-results.jpg" alt="Impact Report with metrics">
+                        <figcaption><strong>Screen 6: Impact Report</strong> — Executive dashboard with verified repairs and compliance metrics.</figcaption>
+                    </figure>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 4: TECHNICAL SPECS -->
+    <section>
+        <div class="container">
+            <div class="section-number">04 / Technical Architecture</div>
+            <h2>Production-Grade Stack</h2>
+
+            <p>The application is built on modern web technologies, optimized for performance, accessibility, and maintainability.</p>
+
+            <h3>Stack</h3>
+            <div class="tech-stack">
+                <div class="tech-item">
+                    <div class="tech-label">Frontend</div>
+                    <div class="tech-value">React 19.2<br/>TypeScript 7.0</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-label">Build Tool</div>
+                    <div class="tech-value">Vite 8.2</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-label">Testing</div>
+                    <div class="tech-value">Vitest 4.1<br/>React Testing Library 16.3</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-label">State Management</div>
+                    <div class="tech-value">React Context<br/>Hooks + LocalStorage</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-label">Deployment</div>
+                    <div class="tech-value">Vercel (Serverless)</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-label">Accessibility</div>
+                    <div class="tech-value">WCAG 2.1 AA<br/>Compliant</div>
+                </div>
+            </div>
+
+            <h3>Key Metrics</h3>
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-label">Bundle Size (JS)</div>
+                    <div class="metric-value">255 kB</div>
+                    <div class="metric-description">Gzipped: 75.64 kB</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Bundle Size (CSS)</div>
+                    <div class="metric-value">41.8 kB</div>
+                    <div class="metric-description">Gzipped: 8.08 kB</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Build Time</div>
+                    <div class="metric-value">288 ms</div>
+                    <div class="metric-description">Vite optimized</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Browser Support</div>
+                    <div class="metric-value">Chrome 90+</div>
+                    <div class="metric-description">Firefox, Safari, iOS Safari</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 5: DEPLOYMENT -->
+    <section>
+        <div class="container">
+            <div class="section-number">05 / Live Deployment</div>
+            <h2>Production Ready</h2>
+
+            <div class="deployment-banner">
+                <h3>Access the Live Application</h3>
+                <div class="url">https://011-access-haryana-campus.vercel.app</div>
+                <a href="https://011-access-haryana-campus.vercel.app" class="cta-button" target="_blank">Open Application</a>
+            </div>
+
+            <h3>Getting Started</h3>
+            <ol>
+                <li><strong>Visit the Application:</strong> Open the URL above in your web browser</li>
+                <li><strong>Start the Demo:</strong> Click "Continue guided audit" to begin the 5-minute presenter journey</li>
+                <li><strong>Explore Screens:</strong> Use tab navigation to walk through all six workflow stages</li>
+                <li><strong>Switch Roles:</strong> Use "Simulated role" selector to view different perspectives (Auditor → Facilities → Verifier)</li>
+                <li><strong>Test Accessibility:</strong> Try text sizing, high contrast, and reduced motion controls</li>
+            </ol>
+
+            <h3>Browser Compatibility</h3>
+            <div class="features-grid">
+                <div class="feature-item">
+                    <div class="feature-icon">✓</div>
+                    <div class="feature-content">
+                        <h4>Chrome/Edge 90+</h4>
+                        <p>Full support, optimized rendering</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">✓</div>
+                    <div class="feature-content">
+                        <h4>Firefox 88+</h4>
+                        <p>Full compatibility</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">✓</div>
+                    <div class="feature-content">
+                        <h4>Safari 14+</h4>
+                        <p>Responsive design optimized</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">✓</div>
+                    <div class="feature-content">
+                        <h4>iOS Safari 14.4+</h4>
+                        <p>Mobile-first responsive</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 6: DEMO NOTICE & FOOTER -->
+    <section>
+        <div class="container">
+            <div class="section-number">06 / Important Notice</div>
+            <h2>Fictional Demonstration</h2>
+
+            <p><strong>All records in this application are fictional and illustrative.</strong></p>
+
+            <h3>What's Real</h3>
+            <ul>
+                <li>The workflow design and interaction patterns</li>
+                <li>WCAG 2.1 AA accessibility compliance</li>
+                <li>Technical implementation and architecture</li>
+                <li>Responsive design and user experience</li>
+            </ul>
+
+            <h3>What's Fictional</h3>
+            <ul>
+                <li>Campus names, locations, and layouts</li>
+                <li>Student and staff identities</li>
+                <li>Dates, timelines, and historical records</li>
+                <li>Cost estimates and repair scenarios</li>
+                <li>Images (show unrelated locations, not matched before/after pairs)</li>
+            </ul>
+
+            <h3>Not a Legal Document</h3>
+            <p>This application is <strong>NOT</strong>:</p>
+            <ul>
+                <li>A professional accessibility assessment tool</li>
+                <li>A statutory certification or compliance determination</li>
+                <li>A legal opinion or guidance document</li>
+                <li>A replacement for professional accessibility consulting</li>
+            </ul>
+
+            <p>The screening workflow is a demonstration only and is not a professional assessment, statutory certification, or determination of legal compliance.</p>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <p><strong>Access Haryana Campus</strong> — Ideathon Demo 2026</p>
+        <p>Built with React 19 + Vite 8 | Deployed on Vercel</p>
+        <p><a href="https://011-access-haryana-campus.vercel.app" class="footer-link" target="_blank">View Live Application</a> · <a href="https://github.com/abinavv-com/access-haryana-campus" class="footer-link" target="_blank">View Source Code</a></p>
+        <p style="margin-top: 32px; font-size: 12px; border-top: 1px solid rgba(255,255,255,0.2); padding-top: 24px;">Generated August 21, 2026 · Professional Edition · Print-optimized for email distribution</p>
+    </footer>
+</body>
+</html>
