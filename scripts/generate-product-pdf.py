@@ -15,7 +15,7 @@ def generate_pdf(vercel_url=None):
     """Generate product PDF with screenshots and Vercel link"""
 
     project_root = Path(__file__).parent.parent
-    screenshots_dir = Path(r"D:\temp\claude\screenshots")
+    screenshots_dir = project_root / "product-export" / "screenshots"
     output_dir = project_root / "product-export"
     output_dir.mkdir(exist_ok=True)
 
